@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import logging
+from logging import getLogger
+from logging import StreamHandler
+from logging import DEBUG
 import MeCab
 import re
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
 
 
 class DataConstructor:
@@ -91,8 +96,8 @@ class DataConstructor:
         if not isinstance(csv_data, list):
             logger.warning("Input value is not List: %s." % csv_data)
 
-        logging.debug("--------------------------------------")
-        logging.debug(csv_data)
+        logger.debug("--------------------------------------")
+        logger.debug(csv_data)
         if len(csv_data) <= self.PRONOUNCIATION:
             return False
         elif csv_data[self.PART] == u'記号':
