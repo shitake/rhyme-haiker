@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from poetry.data_constructor.mcmc import MCMC
+from poetry.data_constructor.chains_data_constructor import ChainsDataConstructor
 import unittest
 
 
-class TestMCMC(unittest.TestCase):
+class TestChainsDataConstructor(unittest.TestCase):
 
-    def test_create_chains_list(self):
-        mcmc = MCMC()
+    def test_construct_chains_dict(self):
+        cdc = ChainsDataConstructor()
 
-        text = "古池や蛙飛び込む水の音"
+        text_list = ["古池", "や", "蛙", "飛び込む", "水", "の", "音"]
         self.assertEqual(
-            mcmc.create_chains_list(text),
+            cdc._construct_chains_dict(text_list),
             {
                 "古池": ["や"],
                 "や": ["蛙"],
@@ -23,9 +23,9 @@ class TestMCMC(unittest.TestCase):
             }
         )
 
-        text = "古池あ古池い古池う蛙あ蛙い"
+        text_list = ["古池", "あ", "古池", "い", "古池", "う", "蛙", "あ", "蛙", "い"]
         self.assertEqual(
-            mcmc.create_chains_list(text),
+            cdc._construct_chains_dict(text_list),
             {
                 "古池": ["あ", "い", "う"],
                 "蛙": ["あ", "い"],
@@ -35,24 +35,24 @@ class TestMCMC(unittest.TestCase):
             }
         )
 
-    def test_wakatu(self):
-        mcmc = MCMC()
-        mcmc.read_data = "古池や蛙飛び込む水の音"
-        self.assertEqual(
-            mcmc._wakatu(),
-            [
-                "古池",
-                "や",
-                "蛙",
-                "飛び込む",
-                "水",
-                "の",
-                "音"
-            ]
-        )
+    # def test_wakatu(self):
+    #     cdc = ChainsDataConstructor()
+    #     read_data = "古池や蛙飛び込む水の音"
+    #     self.assertEqual(
+    #         cdc._wakatu(),
+    #         [
+    #             "古池",
+    #             "や",
+    #             "蛙",
+    #             "飛び込む",
+    #             "水",
+    #             "の",
+    #             "音"
+    #         ]
+    #     )
 
     def test_create_next_word_list(self):
-        mcmc = MCMC()
+        cdc = ChainsDataConstructor()
 
         current_word = "古池"
         text_list = [
@@ -61,7 +61,7 @@ class TestMCMC(unittest.TestCase):
         ]
 
         self.assertEqual(
-            mcmc._create_next_word_list(
+            cdc._create_next_word_list(
                 current_word,
                 text_list
             ),

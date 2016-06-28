@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import MeCab
+# import MeCab
 
 from poetry.data_constructor.data_constructor import DataConstructor
 
@@ -16,16 +16,17 @@ class ChainsDataConstructor(DataConstructor):
         親クラスのメソッドをオーバーライド．
         文章から単語の前後関係を抽出する．
         """
-        text_list = self._wakatu(csv_data_list)
+        # text_list = self._wakatu(csv_data_list)
+        text_list = [data[self.WORD] for data in csv_data_list]
         return self._construct_chains_dict(text_list)
 
-    def _wakatu(self, csv_data_list):
-        """
-        分かち書き後のリストを作成．
-        """
-        # TODO: ジェネレータ化
-        m = MeCab.Tagger('-Owakati')
-        return m.parse(csv_data_list).split()
+    # def _wakatu(self, csv_data_list):
+    #     """
+    #     分かち書き後のリストを作成．
+    #     """
+    #     # TODO: ジェネレータ化
+    #     m = MeCab.Tagger('-Owakati')
+    #     return m.parse(csv_data_list).split()
 
     def _construct_chains_dict(self, text_list):
         """
