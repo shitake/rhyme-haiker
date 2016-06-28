@@ -3,39 +3,31 @@
 import logging
 import MeCab
 
+from poetry.data_constructor.data_constructor import DataConstructor
+
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
 
-class MCMC:
+class ChainsDataConstructor(DataConstructor):
 
-    def __init__(self):
-        # self.read_data = read_data  # TODO: TextReader からデータを取得するように変更
-        self.read_data = ""
-
-    def create_chains_list(self, read_data):
+    def _extract_data(self, csv_data_list):
         """
+        親クラスのメソッドをオーバーライド．
         文章から単語の前後関係を抽出する．
-
-        Args:
-          read_data: 未加工の文章
         """
-        self.read_data = read_data
-        text_list = self._wakatu()
-        chain = self._create_chain_dict(text_list)
-        # self._insert_chained_words(chain)
+        text_list = self._wakatu(csv_data_list)
+        return self._construct_chains_dict(text_list)
 
-        return chain  # TODO: words データ作成側と同じような出力型にする
-
-    def _wakatu(self):
+    def _wakatu(self, csv_data_list):
         """
         分かち書き後のリストを作成．
         """
         # TODO: ジェネレータ化
         m = MeCab.Tagger('-Owakati')
-        return m.parse(self.read_data).split()
+        return m.parse(csv_data_list).split()
 
-    def _create_chain_dict(self, text_list):
+    def _construct_chains_dict(self, text_list):
         """
         単語の前後関係を持つ dict を作成．
 
@@ -79,19 +71,3 @@ class MCMC:
                 next_word_list.append(next_word)
 
         return next_word_list
-
-    # def _create_text_set(self):
-    #     """
-    #     単語の set を作成
-    #     """
-    #     text = []
-    #     for line in self._wakatu():  # TODO: 再考
-    #         for word in line:
-    #             text.append(word)
-    #     return list(set(text))
-
-    # def insert_chained_words(self, word_dict):
-    #     """
-    #     2つの単語からなる dict を
-    #     DB へ登録する．
-    #     """
