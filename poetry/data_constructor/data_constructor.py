@@ -21,7 +21,7 @@ class DataConstructor:
     PRONOUNCIATION = 9
 
     def __init__(self):
-        self.read_data = ""  # TODO: _read_text() を削除してここの初期化も削除
+        # self.read_data = ""  # TODO: _read_text() を削除してここの初期化も削除
         self.yomi = ""
         self.vowel_pronounciation = ""
 
@@ -38,12 +38,12 @@ class DataConstructor:
         return self._construct_parsed_data(read_data)  # TODO: 修正対象
 
     # TODO: poetry/utils/text_reader.py に組み込む
-    def _read_text(self):
-        """
-        学習用データ読み込み
-        """
-        with open("/Users/pokesu/Downloads/corpus/test.txt") as f:
-            self.read_data = f.read()
+    # def _read_text(self):
+    #     """
+    #     学習用データ読み込み
+    #     """
+    #     with open("/Users/pokesu/Downloads/corpus/test.txt") as f:
+    #         self.read_data = f.read()
 
     def _construct_parsed_data(self, read_data):
         """
@@ -51,8 +51,10 @@ class DataConstructor:
         """
         m = MeCab.Tagger()
 
-        mecabed_list = m.parse(read_data).split("\n")
-        csv_list = [self._splited_word_data_to_csv_list(line) for line in mecabed_list]
+        parsed_list = m.parse(read_data).split("\n")
+        csv_list = [
+            self._splited_word_data_to_csv_list(line) for line in parsed_list
+        ]
         sanitized_data_list = self._sanitize_data_list(csv_list)
         return self._extract_data(sanitized_data_list)
 
@@ -61,7 +63,9 @@ class DataConstructor:
         分かち書き後のデータリストを csv のリストへ変換．
         """
         if not isinstance(splited_word_data, str):
-            logger.warning("Input value is not String: %s." % splited_word_data)
+            logger.warning(
+                "Input value is not String: %s." % splited_word_data
+            )
 
         csv_text = re.sub('\t', ',', splited_word_data)
         return csv_text.split(',')
@@ -113,9 +117,3 @@ class DataConstructor:
         出力したいデータごとに構築された辞書を返す．
         子クラスでオーバーライドして使う．
         """
-
-
-if __name__ == '__main__':
-    dc = DataConstructor()
-    parsed = dc.construct_data()
-    print(repr(parsed))

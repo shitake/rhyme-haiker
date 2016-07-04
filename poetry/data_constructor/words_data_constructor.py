@@ -20,7 +20,9 @@ class WordsDataConstructor(DataConstructor):
         """
         親クラスのメソッドをオーバーライド．
         """
-        return [self._construct_words_dict(csv_data_list)]
+        return [
+            self._construct_words_dict(csv_data) for csv_data in csv_data_list
+        ]
 
     def _construct_words_dict(self, csv_data):
         """
@@ -46,7 +48,8 @@ class WordsDataConstructor(DataConstructor):
         # 拗音をリストの先頭にする
         try:
             substituted_yomi = self._substitute_diphthong()
-            self.vowel_pronounciation = self._substitute_straight_syllables(substituted_yomi)
+            self.vowel_pronounciation = \
+                self._substitute_straight_syllables(substituted_yomi)
         except SubstitutionError as e:
             print('Substitution was incompleted.', e.origin, e.value)
 
@@ -165,8 +168,8 @@ class SubstitutionError(Exception):
         return repr(self.origin, self.value)
 
 
-if __name__ == '__main__':
-    corpus =
-    dc = WordsDataConstructor()
-    parsed = dc.construct_data(corpus)
-    print(repr(parsed))
+# if __name__ == '__main__':
+#     corpus =
+#     dc = WordsDataConstructor()
+#     parsed = dc.construct_data(corpus)
+#     print(repr(parsed))
