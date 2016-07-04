@@ -1,5 +1,8 @@
 from setuptools import setup
 
+with open('README.txt') as f:
+    readme = f.read()
+
 setup(
     name="poetry",
     version="0.0.1",
@@ -7,5 +10,6 @@ setup(
         'poetry',
     ],
     author="shitake",
-    test_suite='tests'
+    test_suite='tests',
+    long_description=readme
 )
