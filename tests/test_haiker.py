@@ -7,23 +7,61 @@ import unittest
 
 class TestHaiker(unittest.TestCase):
 
+    WORDS = [
+        {
+            "word": "古池",
+            "vowel": "ウウイエ",
+            "length": 4,
+            "part": "名詞"
+
+        },
+        {
+            "word": "蛙",
+            "vowel": "アアウ",
+            "length": 3,
+            "part": "名詞"
+        },
+        {
+            "word": "あ",
+            "vowel": "ア",
+            "length": 1,
+            "part": "名詞"
+        },
+        {
+            "word": "い",
+            "vowel": "イ",
+            "length": 1,
+            "part": "名詞"
+        },
+        {
+            "word": "う",
+            "vowel": "ウ",
+            "length": 1,
+            "part": "名詞"
+        }
+    ]
+    CHAINS = {
+        "古池": ["あ", "い", "う"],
+        "蛙": ["あ", "い"],
+        "あ": ["古池", "蛙"],
+        "い": ["古池"],
+        "う": ["蛙"]
+    }
+
     def test_construct_first_five(self):
         haiker = Haiker(
-            "",
-            {
-                "古池": ["あ", "い", "う"],
-                "蛙": ["あ", "い"],
-                "あ": ["古池", "蛙"],
-                "い": ["古池"],
-                "う": ["蛙"]
-            }
+            words=TestHaiker.WORDS,
+            chains=TestHaiker.CHAINS
         )
+
         self.assertIsInstance(
             haiker.construct_first_five(),
             str
         )
+
+        haiker.construct_first_five()
         self.assertEqual(
-            len(haiker.construct_first_five()),
+            len(haiker.first_five_vowel),
             5
         )
 
@@ -40,7 +78,7 @@ class TestHaiker(unittest.TestCase):
         # )
 
         haiker = Haiker(
-            "",
+            {},
             {}
         )
         self.assertEqual(
@@ -49,9 +87,22 @@ class TestHaiker(unittest.TestCase):
         )
 
         haiker = Haiker(
-            "",
+            [
+                {
+                    "word": "a",
+                    "vowel": "ア",
+                    "length": 1,
+                    "part": "名詞"
+                },
+                {
+                    "word": "i",
+                    "vowel": "イ",
+                    "length": 1,
+                    "part": "名詞"
+                }
+            ],
             {
-                "a": ["i"]
+                "a": ["i"],
             }
         )
         self.assertEqual(
@@ -60,7 +111,7 @@ class TestHaiker(unittest.TestCase):
         )
 
     def test_is_n_char(self):
-        haiker = Haiker("", {})
+        haiker = Haiker({}, {})
 
         self.assertTrue(
             haiker._is_n_char(5, "aiueo")
@@ -77,7 +128,7 @@ class TestHaiker(unittest.TestCase):
         )
 
     def test_is_less_than_n_char(self):
-        haiker = Haiker("", {})
+        haiker = Haiker({}, {})
 
         self.assertTrue(
             haiker._is_less_than_n_char(5, "aiue")
@@ -95,24 +146,19 @@ class TestHaiker(unittest.TestCase):
 
     def test_construct_seven(self):
         haiker = Haiker(
-            "",
-            {
-                "古池": ["あ", "い", "う"],
-                "蛙": ["あ", "い"],
-                "あ": ["古池", "蛙"],
-                "い": ["古池"],
-                "う": ["蛙"]
-            }
+            words=TestHaiker.WORDS,
+            chains=TestHaiker.CHAINS
         )
         haiker.construct_first_five()
+        haiker.construct_seven(),
         self.assertEqual(
-            len(haiker.construct_seven()),
+            len(haiker.seven_vowel),
             7
         )
 
         # 最初の5字の最後の単語が登録されていない場合，例外を返すことを確認
         haiker = Haiker(
-            "",
+            {},
             {}
         )
         haiker.construct_first_five()
@@ -121,26 +167,53 @@ class TestHaiker(unittest.TestCase):
 
     def test_construct_last_five(self):
         haiker = Haiker(
-            "",
-            {
-                "古池": ["あ", "い", "う"],
-                "蛙": ["あ", "い"],
-                "あ": ["古池", "蛙"],
-                "い": ["古池"],
-                "う": ["蛙"]
-            }
+            words=TestHaiker.WORDS,
+            chains=TestHaiker.CHAINS
         )
-        haiker.construct_first_five()
-        haiker.construct_seven()
+        loop_limit = 200
+        current_loop = 1
+        while True:
+            if current_loop == loop_limit:
+                return False
+            if haiker.construct_first_five():
+                break
+            current_loop += 1
+        current_loop = 1
+        while True:
+            if current_loop == loop_limit:
+                return False
+            if haiker.construct_seven():
+                break
+            current_loop += 1
+        current_loop = 1
+        while True:
+            if current_loop == loop_limit:
+                return False
+            if haiker.construct_last_five():
+                break
+            current_loop += 1
         self.assertEqual(
-            len(haiker.construct_last_five()),
+            len(haiker.last_five_vowel),
             5
         )
 
         # 7字の最後の単語が登録されていない場合，例外を返すことを確認
         haiker = Haiker(
-            "",
-            {
+            words=[
+                {
+                    "word": "あ",
+                    "vowel": "ア",
+                    "length": 1,
+                    "part": "名詞"
+                },
+                {
+                    "word": "い",
+                    "vowel": "イ",
+                    "length": 1,
+                    "part": "名詞"
+                }
+            ],
+            chains={
                 "あ": ["い"],
                 "い": ["あ"]
             }
@@ -153,14 +226,8 @@ class TestHaiker(unittest.TestCase):
 
     def test_compose(self):
         haiker = Haiker(
-            "",
-            {
-                "古池": ["あ", "い", "う"],
-                "蛙": ["あ", "い"],
-                "あ": ["古池", "蛙"],
-                "い": ["古池"],
-                "う": ["蛙"]
-            }
+            words=TestHaiker.WORDS,
+            chains=TestHaiker.CHAINS
         )
         self.assertTrue(
             haiker.compose()
