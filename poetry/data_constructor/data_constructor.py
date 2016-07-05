@@ -21,7 +21,6 @@ class DataConstructor:
     PRONOUNCIATION = 9
 
     def __init__(self):
-        # self.read_data = ""  # TODO: _read_text() を削除してここの初期化も削除
         self.yomi = ""
         self.vowel_pronounciation = ""
 
@@ -33,17 +32,8 @@ class DataConstructor:
         # TODO: インターフェイス修正
         #       分かち書き後の単語1つを入力データとして受け取る
         #       方がよさそう
-        # self._read_text()
 
         return self._construct_parsed_data(read_data)  # TODO: 修正対象
-
-    # TODO: poetry/utils/text_reader.py に組み込む
-    # def _read_text(self):
-    #     """
-    #     学習用データ読み込み
-    #     """
-    #     with open("/Users/pokesu/Downloads/corpus/test.txt") as f:
-    #         self.read_data = f.read()
 
     def _construct_parsed_data(self, read_data):
         """
@@ -84,9 +74,9 @@ class DataConstructor:
         unique_word_list = []
         for csv_data in csv_list:
             if not self._can_read(csv_data):
-                logger.warning("Unreadable: %s." % csv_data[self.WORD])
+                logger.debug("Unreadable: %s." % csv_data[self.WORD])
             elif csv_data[self.WORD] in unique_word_list:
-                logger.warning("Duplicated: %s." % csv_data[self.WORD])
+                logger.debug("Duplicated: %s." % csv_data[self.WORD])
             else:
                 sanitized_data_list.append(csv_data)
                 unique_word_list.append(csv_data[self.WORD])
