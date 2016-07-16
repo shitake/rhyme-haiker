@@ -20,6 +20,8 @@ class DataConstructor:
     PART_SUBTYPE = 2
     PRONOUNCIATION = 9
 
+    DELIMITER = '\n'
+
     def __init__(self):
         self.yomi = ""
         self.vowel_pronounciation = ""
@@ -41,12 +43,17 @@ class DataConstructor:
         """
         m = MeCab.Tagger()
 
-        parsed_list = m.parse(read_data).split("\n")
+        # 1文を改行コードで切る
+        parsed_text = m.parse(read_data)
+        delimited_list = self._delimit(parsed_text)
         csv_list = [
-            self._splited_word_data_to_csv_list(line) for line in parsed_list
+            self._splited_word_data_to_csv_list(line) for line in delimited_list
         ]
         sanitized_data_list = self._sanitize_data_list(csv_list)
         return self._extract_data(sanitized_data_list)
+
+    def _delimit(self, parsed_text):
+        return parsed_text.split(DataConstructor.DELIMITER)
 
     def _splited_word_data_to_csv_list(self, splited_word_data):
         """
