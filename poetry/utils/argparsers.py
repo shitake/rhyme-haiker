@@ -1,28 +1,65 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-from corpus_reader import CorpusReader
-import logging
-# from poetry.data_constructor.chains_data_constructor import ChainsDataConstructor
-# from poetry.data_constructor.words_data_constructor import WordsDataConstructor
+from logging import getLogger
+from logging import StreamHandler
+from logging import DEBUG
+
+import poetry
+from poetry.data_constructor.chains_data_constructor import ChainsDataConstructor
+from poetry.data_constructor.words_data_constructor import WordsDataConstructor
+from poetry.haiker.haiker import Haiker
+from poetry.utils.corpus_reader import CorpusReader
+from poetry.utils.data_exporter import DataExporter
 
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
+logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+
+OUTPUT_DIR = poetry.__path__[0] + '/../output/'
+WORDS_FILE_NAME = 'words.json'
+CHAINS_FILE_NAME = 'chains.json'
 
 
 def cmd_prep(args):
     logger.info("Preprocessing")
-    logger.info("Loading -> {0}".format(args.filename))
+    logger.info("Loading <- {0}".format(args.filename))
 
     cr = CorpusReader()
     read_data = cr.read_file(args.filename)
-    print(read_data)
+
+    cdc = ChainsDataConstructor()
+    chains_data = cdc.construct_data(read_data)
+
+    wdc = WordsDataConstructor()
+    words_data = wdc.construct_data(read_data)
+
+    de = DataExporter(
+        chains_data=chains_data,
+        words_data=words_data
+    )
+    de.export_json()
+
+    logger.info("Exported")
 
 
 def cmd_compose(args):
-    logger.info("compose")
-    pass
+    logger.info("Compose")
+
+    cr = CorpusReader()
+    words = cr.read_file(OUTPUT_DIR + WORDS_FILE_NAME)
+    chains = cr.read_file(OUTPUT_DIR + CHAINS_FILE_NAME)
+
+    haiker = Haiker(
+        words=words,
+        chains=chains
+    )
+    haiku = haiker.compose()
+
+    logger.info(haiku)
 
 
 def main():
@@ -30,18 +67,25 @@ def main():
         description='Haiku composer.'
     )
 
-    parser.add_argument(
-        'filename'
-    )
-
     subparsers = parser.add_subparsers()
 
     # データ作成
-    prep_parser = subparsers.add_parser('prep')
+    prep_parser = subparsers.add_parser(
+        'prep',
+        help='Preprocessing for corpus.',
+    )
+    prep_parser.add_argument(
+        'filename',
+        type=str,
+        help='Corpus file name.'
+    )
     prep_parser.set_defaults(func=cmd_prep)
 
     # 詠む
-    compose_parser = subparsers.add_parser('compose')
+    compose_parser = subparsers.add_parser(
+        'compose',
+        help='Compose rhyming haiku.',
+    )
     compose_parser.set_defaults(func=cmd_compose)
 
     args = parser.parse_args()
@@ -59,4 +103,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # TODO: ファイル名再考，これをコマンドの中心とした名前にする(haiku とか)
