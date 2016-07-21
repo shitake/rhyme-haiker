@@ -4,15 +4,15 @@ import copy
 import json
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
+from logging import INFO
 import random
 
 from poetry.rhymer.rhymer import Rhymer
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(INFO)
+logger.setLevel(INFO)
 logger.addHandler(handler)
 
 
@@ -24,8 +24,8 @@ class Haiker:
     WORD = "word"
 
     def __init__(self, words, chains):
-        self.words = json.loads(json.dumps(words))
-        self.chains = json.loads(json.dumps(chains))
+        self.words = json.loads(words)
+        self.chains = json.loads(chains)
 
         self.word_list = []
 
@@ -66,10 +66,10 @@ class Haiker:
         current_loop = 1
         rhymer = Rhymer()
         while True:
-            print(current_loop)
             self.construct_last_five()
-            if rhymer.is_rhymed(self.seven_vowel, self.last_five_vowel) or \
-                    rhymer.is_rhymed(self.first_five_vowel, self.last_five_vowel):
+            # if rhymer.is_rhymed(self.seven_vowel, self.last_five_vowel) or \
+            #         rhymer.is_rhymed(self.first_five_vowel, self.last_five_vowel):
+            if rhymer.is_rhymed(self.seven_vowel, self.last_five_vowel):
                 break
             current_loop += 1
             if current_loop == loop_limit:
