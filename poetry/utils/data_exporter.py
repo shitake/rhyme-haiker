@@ -5,7 +5,7 @@ from logging import getLogger
 from logging import StreamHandler
 from logging import DEBUG
 
-from poetry.data_constructor.data_constructor import DataConstructor
+import poetry
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -16,27 +16,25 @@ logger.addHandler(handler)
 
 class DataExporter:
 
+    OUTPUT_DIR = poetry.__path__[0] + '/../output/'
     CHAINS_FILE_NAME = "chains.json"
     WORDS_FILE_NAME = "words.json"
 
     def __init__(self, chains_data, words_data):
-        self.chains_data = chains_data
-        self.words_data = words_data
+        self.chains_data = json.dumps(chains_data, ensure_ascii=False)
+        self.words_data = json.dumps(words_data, ensure_ascii=False)
 
     def export_json(self):
         """
         json に出力．
         """
-        with open(DataExporter.CHAINS_FILE_NAME) as f:
-            json.dump(self.chains_data, f)
-        with open(DataExporter.WORDS_FILE_NAME) as f:
-            json.dump(self.words_data, f)
-
-if __name__ == '__main__':
-    dc = DataConstructor()
-    mecabed = dc.construct_data()
-    de = DataExporter(
-        chains_data=
-        words_data=mecabed
-    )
-    de.export_json()
+        with open(
+                self.OUTPUT_DIR + DataExporter.CHAINS_FILE_NAME,
+                mode='w',
+        ) as f:
+            f.write(self.chains_data)
+        with open(
+                self.OUTPUT_DIR + DataExporter.WORDS_FILE_NAME,
+                mode='w',
+        ) as f:
+            f.write(self.words_data)
