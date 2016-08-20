@@ -6,7 +6,9 @@ from logging import StreamHandler
 from logging import DEBUG
 
 import poetry
+from poetry.data_constructor.chains_data import ChainsData
 from poetry.data_constructor.chains_data_constructor import ChainsDataConstructor
+from poetry.data_constructor.words_data import WordsData
 from poetry.data_constructor.words_data_constructor import WordsDataConstructor
 from poetry.haiker.haiker import Haiker
 from poetry.utils.corpus_reader import CorpusReader
@@ -20,16 +22,15 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 
 OUTPUT_DIR = poetry.__path__[0] + '/../output/'
-WORDS_FILE_NAME = 'words.json'
-CHAINS_FILE_NAME = 'chains.json'
+WORDS_FILE_NAME = 'words.pickle'
+CHAINS_FILE_NAME = 'chains.pickle'
 
 
 def cmd_prep(args):
     logger.info("Preprocessing")
     logger.info("Loading <- {0}".format(args.filename))
 
-    cr = CorpusReader()
-    read_data = cr.read_file(args.filename)
+    read_data = CorpusReader.read_file(args.filename)
 
     cdc = ChainsDataConstructor()
     chains_data = cdc.construct_data(read_data)
@@ -37,11 +38,9 @@ def cmd_prep(args):
     wdc = WordsDataConstructor()
     words_data = wdc.construct_data(read_data)
 
-    de = DataExporter(
-        chains_data=chains_data,
-        words_data=words_data
-    )
-    de.export_json()
+    de = DataExporter(chains_data=chains_data,
+                      words_data=words_data)
+    de.export_pickle()
 
     logger.info("Exported")
 
@@ -49,43 +48,32 @@ def cmd_prep(args):
 def cmd_compose(args):
     logger.info("Compose")
 
-    cr = CorpusReader()
-    words = cr.read_file(OUTPUT_DIR + WORDS_FILE_NAME)
-    chains = cr.read_file(OUTPUT_DIR + CHAINS_FILE_NAME)
+    WordsData.words_data = CorpusReader.read_pickled_file(OUTPUT_DIR + WORDS_FILE_NAME)
+    ChainsData.chains_data = CorpusReader.read_pickled_file(OUTPUT_DIR + CHAINS_FILE_NAME)
 
-    haiker = Haiker(
-        words=words,
-        chains=chains
-    )
+    haiker = Haiker(words_data=WordsData.words_data,
+                    chains_data=ChainsData.chains_data)
     haiku = haiker.compose()
 
     logger.info(haiku)
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Haiku composer.'
-    )
+    parser = argparse.ArgumentParser(description='Haiku composer.')
 
     subparsers = parser.add_subparsers()
 
     # データ作成
-    prep_parser = subparsers.add_parser(
-        'prep',
-        help='Preprocessing for corpus.',
-    )
-    prep_parser.add_argument(
-        'filename',
-        type=str,
-        help='Corpus file name.'
-    )
+    prep_parser = subparsers.add_parser('prep',
+                                        help='Preprocessing for corpus.')
+    prep_parser.add_argument('filename',
+                             type=str,
+                             help='Corpus file name.')
     prep_parser.set_defaults(func=cmd_prep)
 
     # 詠む
-    compose_parser = subparsers.add_parser(
-        'compose',
-        help='Compose rhyming haiku.',
-    )
+    compose_parser = subparsers.add_parser('compose',
+                                           help='Compose rhyming haiku.')
     compose_parser.set_defaults(func=cmd_compose)
 
     args = parser.parse_args()
