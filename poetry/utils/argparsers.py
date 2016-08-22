@@ -11,7 +11,7 @@ from poetry.data_constructor.chains_data_constructor import ChainsDataConstructo
 from poetry.data_constructor.words_data import WordsData
 from poetry.data_constructor.words_data_constructor import WordsDataConstructor
 from poetry.haiker.haiker import Haiker
-from poetry.utils.corpus_reader import CorpusReader
+from poetry.utils.data_reader import DataReader
 from poetry.utils.data_exporter import DataExporter
 
 
@@ -30,7 +30,7 @@ def cmd_prep(args):
     logger.info("Preprocessing")
     logger.info("Loading <- {0}".format(args.filename))
 
-    read_data = CorpusReader.read_file(args.filename)
+    read_data = DataReader.read_file(args.filename)
 
     cdc = ChainsDataConstructor()
     chains_data = cdc.construct_data(read_data)
@@ -48,11 +48,10 @@ def cmd_prep(args):
 def cmd_compose(args):
     logger.info("Compose")
 
-    WordsData.words_data = CorpusReader.read_pickled_file(OUTPUT_DIR + WORDS_FILE_NAME)
-    ChainsData.chains_data = CorpusReader.read_pickled_file(OUTPUT_DIR + CHAINS_FILE_NAME)
+    WordsData.words_data = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FILE_NAME)
+    ChainsData.chains_data = DataReader.read_pickled_file(OUTPUT_DIR + CHAINS_FILE_NAME)
 
-    haiker = Haiker(words_data=WordsData.words_data,
-                    chains_data=ChainsData.chains_data)
+    haiker = Haiker()
     haiku = haiker.compose()
 
     logger.info(haiku)

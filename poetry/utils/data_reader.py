@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
 
-class CorpusReader:
+class DataReader:
 
     @classmethod
     def read_file(cls, addr):

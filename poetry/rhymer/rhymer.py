@@ -16,7 +16,8 @@ class Rhymer:
     def __init__(self):
         self.point = 0
 
-    def is_rhymed(self, first_pron, second_pron):
+    @classmethod
+    def is_rhymed(cls, first_pron, second_pron):
         """
         入力として読みを受け，
         末尾1字以上が一致していれば韻を踏んでいるとする．

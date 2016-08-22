@@ -5,7 +5,7 @@ with open('README.txt') as f:
 
 setup(
     name="RhymeHaiker",
-    version="1.0.0",
+    version="1.1.0",
     description='A rhyming haiku generator.',
     long_description=readme,
     url='',
@@ -20,7 +20,7 @@ setup(
     data_files=[],
     entry_points={
         'console_scripts': [
-            'haiku=poetry.utils.argparser:main',
+            'haiku=poetry.utils.argparsers:main',
         ],
     },
     test_suite='tests',

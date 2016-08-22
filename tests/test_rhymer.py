@@ -7,13 +7,11 @@ import unittest
 class TestRhymer(unittest.TestCase):
 
     def test_is_rhymed(self):
-        rhymer = Rhymer()
-
         first_pron = "アイウエオ"
         second_pron = "アイウエオ"
 
         self.assertTrue(
-            rhymer.is_rhymed(
+            Rhymer.is_rhymed(
                 first_pron,
                 second_pron
             )

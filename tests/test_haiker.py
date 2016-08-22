@@ -1,23 +1,59 @@
 # -*- coding: utf-8 -*-
 
+from poetry.data_constructor.chains_data import ChainsData
+from poetry.data_constructor.words import Words
+from poetry.data_constructor.words_data import WordsData
 from poetry.haiker.haiker import Haiker
-from poetry.haiker.haiker import ConstructionError
+from poetry.haiker.phrase import Phrase
+from poetry.haiker.phrase_tree import PhraseTree
 import unittest
 
 
 class TestHaiker(unittest.TestCase):
 
+    ROOT = tuple('root')
+
+    SUCCESS_WORDS = [
+        {
+            "word": "あああ",
+            "vowel": "アアア",
+            "length": 3,
+            "part": "名詞"
+        },
+        {
+            "word": "いいい",
+            "vowel": "イイイ",
+            "length": 3,
+            "part": "名詞"
+        },
+        {
+            "word": "ううう",
+            "vowel": "ウウウ",
+            "length": 3,
+            "part": "名詞"
+        }
+    ]
+    SUCCESS_CHAINS = {
+        ('あああ', 'いいい', 'ううう'): [
+            'あああ'
+        ],
+        ('いいい', 'ううう', 'あああ'): [
+            'いいい'
+        ],
+        ('ううう', 'あああ', 'いいい'): [
+            'ううう'
+        ]
+    }
     WORDS = [
         {
             "word": "古池",
             "vowel": "ウウイエ",
             "length": 4,
             "part": "名詞"
-
         },
         {
             "word": "蛙",
-            "vowel": "アアウ",
+            "vowel": "アエウ",
             "length": 3,
             "part": "名詞"
         },
@@ -41,29 +77,50 @@ class TestHaiker(unittest.TestCase):
         }
     ]
     CHAINS = {
-        "古池": ["あ", "い", "う"],
-        "蛙": ["あ", "い"],
-        "あ": ["古池", "蛙"],
-        "い": ["古池"],
-        "う": ["蛙"]
+        ('あ', '古池', 'い'): [
+            '古池'
+        ],
+        ('あ', '蛙', 'い'): [
+            None
+        ],
+        ('い', '古池', 'う'): [
+            '蛙'
+        ],
+        ('古池', 'あ', '古池'): [
+            'い'
+        ],
+        ('古池', 'う', '蛙'): [
+            'あ'
+        ],
+        ('古池', 'い', '古池'): [
+            'う'
+        ],
+        ('蛙', 'あ', '蛙'): [
+            'い'
+        ],
+        ('う', '蛙', 'あ'): [
+            '蛙'
+        ]
     }
+    EMPTY_TEXT = ''
+    EMPTY_LIST = []
+    EMPTY_DICT = {}
 
-    def test_construct_first_five(self):
-        haiker = Haiker(
-            words=TestHaiker.WORDS,
-            chains=TestHaiker.CHAINS
-        )
+    TWELVE = 12
 
-        self.assertIsInstance(
-            haiker.construct_first_five(),
-            str
-        )
+    def test_construct_syllable(self):
+        WordsData.words_data = self.SUCCESS_WORDS
+        ChainsData.chains_data = self.SUCCESS_CHAINS
+        haiker = Haiker()
+        root = PhraseTree(current_words=self.ROOT,
+                          possible_next_words=list(ChainsData.chains_data.keys()))
 
-        haiker.construct_first_five()
-        self.assertEqual(
-            len(haiker.first_five_vowel),
-            5
-        )
+        self.assertIsInstance(haiker.construct_syllable(root, self.TWELVE),
+                              PhraseTree)
+
+        pt = haiker.construct_syllable(root, self.TWELVE)
+        self.assertEqual(PhraseTree.count_phrase_len(pt),
+                         self.TWELVE)
 
         # haiker = Haiker(
         #     "",
@@ -77,161 +134,167 @@ class TestHaiker(unittest.TestCase):
         #     5
         # )
 
-        haiker = Haiker(
-            {},
-            {}
-        )
-        self.assertEqual(
-            haiker.construct_first_five(),
-            None
-        )
+    def test_construct_syllable_initialize_empty(self):
+        """
+        生成中，単語の候補リストが空担った場合
+        """
+        WordsData.words_data = self.EMPTY_LIST
+        ChainsData.chains_data = self.EMPTY_DICT
+        haiker = Haiker()
+        root = PhraseTree(current_words=self.ROOT,
+                          possible_next_words=list(ChainsData.chains_data.keys()))
 
-        haiker = Haiker(
-            [
+        with self.assertRaises(ValueError):
+            haiker.construct_syllable(root, self.TWELVE)
+
+    def test_construct_syllable_failure(self):
+        WordsData.words_data = [
+            {
+                "word": "あ",
+                "vowel": "ア",
+                "length": 1,
+                "part": "名詞"
+            },
+            {
+                "word": "い",
+                "vowel": "イ",
+                "length": 1,
+                "part": "名詞"
+            }
+        ]
+        ChainsData.chains_data = {"あ": ["い"]}
+        haiker = Haiker()
+        root = PhraseTree(current_words=self.ROOT,
+                          possible_next_words=list(ChainsData.chains_data.keys()))
+        with self.assertRaises(ValueError):
+            haiker.construct_syllable(root, self.TWELVE)
+
+    def test_post_proc(self):
+        """
+        Phrase クラスが関連するテストは
+        Phrase のメンバ変数を初期化してから行う．
+        """
+        WordsData.words_data = self.SUCCESS_WORDS
+        ChainsData.chains_data = self.SUCCESS_CHAINS
+        haiker = Haiker()
+        word_tuple = (
+            Words(
                 {
-                    "word": "a",
-                    "vowel": "ア",
-                    "length": 1,
-                    "part": "名詞"
-                },
-                {
-                    "word": "i",
-                    "vowel": "イ",
-                    "length": 1,
+                    "word": "古池",
+                    "vowel": "ウウイエ",
+                    "length": 4,
                     "part": "名詞"
                 }
-            ],
-            {
-                "a": ["i"],
-            }
-        )
-        self.assertEqual(
-            haiker.construct_first_five(),
-            None
-        )
-
-    def test_is_n_char(self):
-        haiker = Haiker({}, {})
-
-        self.assertTrue(
-            haiker._is_n_char(5, "aiueo")
-        )
-        self.assertTrue(
-            haiker._is_n_char(5, "フルイケヤ")
-        )
-        self.assertTrue(
-            haiker._is_n_char(7, "カワズトビコム")
-        )
-
-        self.assertFalse(
-            haiker._is_n_char(5, "カワズトビコム")
-        )
-
-    def test_is_less_than_n_char(self):
-        haiker = Haiker({}, {})
-
-        self.assertTrue(
-            haiker._is_less_than_n_char(5, "aiue")
-        )
-        self.assertTrue(
-            haiker._is_less_than_n_char(5, "フルイケ")
-        )
-        self.assertTrue(
-            haiker._is_less_than_n_char(7, "カワズトビコ")
-        )
-
-        self.assertFalse(
-            haiker._is_less_than_n_char(5, "フルイケヤ")
-        )
-
-    def test_construct_seven(self):
-        haiker = Haiker(
-            words=TestHaiker.WORDS,
-            chains=TestHaiker.CHAINS
-        )
-        haiker.construct_first_five()
-        haiker.construct_seven(),
-        self.assertEqual(
-            len(haiker.seven_vowel),
-            7
-        )
-
-        # 最初の5字の最後の単語が登録されていない場合，例外を返すことを確認
-        haiker = Haiker(
-            {},
-            {}
-        )
-        haiker.construct_first_five()
-        with self.assertRaises(ConstructionError):
-            haiker.construct_seven()
-
-    def test_construct_last_five(self):
-        haiker = Haiker(
-            words=TestHaiker.WORDS,
-            chains=TestHaiker.CHAINS
-        )
-        loop_limit = 200
-        current_loop = 1
-        while True:
-            if current_loop == loop_limit:
-                return False
-            if haiker.construct_first_five():
-                break
-            current_loop += 1
-        current_loop = 1
-        while True:
-            if current_loop == loop_limit:
-                return False
-            if haiker.construct_seven():
-                break
-            current_loop += 1
-        current_loop = 1
-        while True:
-            if current_loop == loop_limit:
-                return False
-            if haiker.construct_last_five():
-                break
-            current_loop += 1
-        self.assertEqual(
-            len(haiker.last_five_vowel),
-            5
-        )
-
-        # 7字の最後の単語が登録されていない場合，例外を返すことを確認
-        haiker = Haiker(
-            words=[
+            ),
+            Words(
+                {
+                    "word": "蛙",
+                    "vowel": "アエウ",
+                    "length": 3,
+                    "part": "名詞"
+                }
+            ),
+            Words(
                 {
                     "word": "あ",
                     "vowel": "ア",
                     "length": 1,
                     "part": "名詞"
-                },
+                }
+            )
+        )
+        pt = PhraseTree.define_root()
+        pt.next_tree = PhraseTree(current_words=word_tuple)
+
+        # Phrase 初期状態
+        # self.assertEqual(
+        #     Phrase.text_list,
+        #     list()
+        # )
+        # self.assertEqual(
+        #     Phrase.last_words,
+        #     tuple()
+        # )
+        # self.assertIsInstance(
+        #     Phrase.last_vowel,
+        #     property
+        # )
+
+        # 中間処理
+        haiker._post_proc(pt)
+
+        # Phrase 代入済み
+        self.assertNotEqual(
+            Phrase.text_list,
+            list()
+        )
+        self.assertNotEqual(
+            Phrase.last_words,
+            tuple()
+        )
+        self.assertIsInstance(
+            Phrase.last_vowel,
+            str
+        )
+
+    def test_get_word(self):
+        pass
+
+    def test_get_vowel(self):
+        WordsData.words_data = (
+            [
                 {
-                    "word": "い",
-                    "vowel": "イ",
+                    "word": "あ",
+                    "vowel": "ア",
                     "length": 1,
                     "part": "名詞"
                 }
-            ],
-            chains={
-                "あ": ["い"],
-                "い": ["あ"]
-            }
+            ]
         )
-        haiker.construct_first_five()
-        haiker.construct_seven()
-        haiker.last_word_of_seven = ""
-        with self.assertRaises(ConstructionError):
-            haiker.construct_last_five()
+        ChainsData.chains_data = self.SUCCESS_CHAINS
+        haiker = Haiker()
+        self.assertEqual(
+            haiker._get_vowel("あ"),
+            "ア"
+        )
 
-    def test_compose(self):
-        haiker = Haiker(
-            words=TestHaiker.WORDS,
-            chains=TestHaiker.CHAINS
+    def test_is_n_char(self):
+        WordsData.words_data = self.EMPTY_LIST
+        ChainsData.chains_data = self.EMPTY_DICT
+        haiker = Haiker()
+
+        self.assertTrue(
+            haiker._is_n_char(5, 5)
+        )
+
+        self.assertFalse(
+            haiker._is_n_char(5, 7)
+        )
+
+    def test_is_less_than_n_char(self):
+        WordsData.words_data = self.EMPTY_LIST
+        ChainsData.chains_data = self.EMPTY_DICT
+        haiker = Haiker()
+
+        self.assertTrue(
+            haiker._is_less_than_n_char(5, 3)
         )
         self.assertTrue(
-            haiker.compose()
+            haiker._is_less_than_n_char(7, 6)
         )
+
+        self.assertFalse(
+            haiker._is_less_than_n_char(5, 5)
+        )
+
+    # def test_compose(self):
+    #     haiker = Haiker(
+    #         words=TestHaiker.WORDS,
+    #         chains=TestHaiker.CHAINS
+    #     )
+    #     self.assertTrue(
+    #         haiker.compose()
+    #     )
 
 
 if __name__ == '__main__':
