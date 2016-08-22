@@ -2,14 +2,14 @@
 
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
+from logging import INFO
 import MeCab
 import re
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(INFO)
+logger.setLevel(INFO)
 logger.addHandler(handler)
 
 
@@ -53,12 +53,13 @@ class DataConstructor:
         return self._extract_data(sanitized_data_list)
 
     def _delimit(self, parsed_text):
-        return parsed_text.split(DataConstructor.DELIMITER)
+        return parsed_text.split(self.DELIMITER)
 
     def _splited_word_data_to_csv_list(self, splited_word_data):
         """
         分かち書き後のデータリストを csv のリストへ変換．
         """
+        # TODO: Utils クラスへ引越
         if not isinstance(splited_word_data, str):
             logger.warning(
                 "Input value is not String: %s." % splited_word_data
@@ -114,3 +115,4 @@ class DataConstructor:
         出力したいデータごとに構築された辞書を返す．
         子クラスでオーバーライドして使う．
         """
+        raise NotImplementedError

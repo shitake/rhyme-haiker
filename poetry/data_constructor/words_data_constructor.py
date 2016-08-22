@@ -19,6 +19,21 @@ class WordsDataConstructor(DataConstructor):
     def _extract_data(self, csv_data_list):
         """
         親クラスのメソッドをオーバーライド．
+        下記のようなデータ構造を返す．
+        [
+            {
+                "word": "あ",
+                "vowel": "ア",
+                "length": 1,
+                "part": "名詞"
+            },
+            {
+                "word": "い",
+                "vowel": "イ",
+                "length": 1,
+                "part": "名詞"
+            }
+        ]
         """
         return [
             self._construct_words_dict(csv_data) for csv_data in csv_data_list
