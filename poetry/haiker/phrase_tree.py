@@ -64,12 +64,12 @@ class PhraseTree(object):
         """
         単語をもとに，対応する辞書を検索．
         """
-        assert WordsData.words_data is not None and \
-            WordsData.words_data != [], "WordsData is not given."
+        assert WordsData.words_data is not None and WordsData.words_data != [], "WordsData is not given."
+        assert isinstance(word, str)
         for word_dict in WordsData.words_data:
             if word_dict["word"] == word:
                 return word_dict
-        return None
+        return None  # TODO: None を返さず例外処理する
 
     @classmethod
     def define_root(cls, possible_next_words=list()):
@@ -84,9 +84,9 @@ class PhraseTree(object):
         """
         現在の文章を返す．
         """
-        if cls.is_root(phrase_tree):
+        if cls.is_root(phrase_tree.parent):
             # assert phrase_tree.current_words is not None, "phrase_tree may be root."
-            text_list = [word.word for word in phrase_tree.next_tree.current_words]
+            text_list = [word.word for word in phrase_tree.current_words]
             return cls._list2str(text_list)
         else:
             last_word = phrase_tree.current_words[-1].word
@@ -97,9 +97,10 @@ class PhraseTree(object):
         """
         現在の文章をリストとして返す．
         """
-        if cls.is_root(phrase_tree):
-            return [word.word for word in phrase_tree.next_tree.current_words]
+        if cls.is_root(phrase_tree.parent):
+            return [word.word for word in phrase_tree.current_words]
         else:
+            # TODO: root -> next_ree で完結した場合の挙動を確認(詳細trello)
             last_word = [phrase_tree.current_words[-1].word]
             return cls.get_text_list(phrase_tree.parent) + last_word
 
@@ -108,8 +109,8 @@ class PhraseTree(object):
         """
         現在の文章の読みを返す．
         """
-        if cls.is_root(phrase_tree):
-            vowel_list = [word.vowel for word in phrase_tree.next_tree.current_words]
+        if cls.is_root(phrase_tree.parent):
+            vowel_list = [word.vowel for word in phrase_tree.current_words]
             return cls._list2str(vowel_list)
         else:
             last_word_vowel = phrase_tree.current_words[-1].vowel
@@ -124,14 +125,13 @@ class PhraseTree(object):
         # TODO: なぜかここだけ is_root() に parent を渡していた．
         #       理由がなければ parent 版は削除しても構わない．
         # if cls.is_root(phrase_tree.parent):
-        if cls.is_root(phrase_tree):
+        if cls.is_root(phrase_tree.parent):
             # 先頭3語
-            assert phrase_tree.next_tree is not None, 'next_tree is None'
-            return sum([word.length for word in phrase_tree.next_tree.current_words])
+            assert phrase_tree is not None, 'phrase_tree is None'
+            return sum([word.length for word in phrase_tree.current_words])
         else:
             last_word_length = cls._len_last_word(phrase_tree)
-            return cls.count_phrase_len(phrase_tree.parent) + \
-                last_word_length
+            return cls.count_phrase_len(phrase_tree.parent) + last_word_length
 
     @classmethod
     def _len_last_word(cls, phrase_tree):

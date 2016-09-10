@@ -134,6 +134,7 @@ class Haiker:
           Phrase インスタンス
         """
         assert phrase_tree is not None
+        assert not PhraseTree.is_root(phrase_tree)
         # TODO: 必要なデータをラップしたコンテナクラスを返却する
         Phrase.text_list = PhraseTree.get_text_list(phrase_tree)
         Phrase.last_words = PhraseTree.get_last_words(phrase_tree)
@@ -163,7 +164,6 @@ class Haiker:
             # TODO: phrase_tree が None になる場合がある
             if not phrase_tree.possible_next_words:
                 # possible_next_words が None, []
-                # TODO: return None みたいなのを返すことになりそう
                 if PhraseTree.is_root(phrase_tree):
                     raise ValueError("Impossible to get word cause of Root Tree doesn't have any possible next words")
                 return phrase_tree.parent, None
@@ -172,10 +172,6 @@ class Haiker:
                     random.shuffle(phrase_tree.possible_next_words)
                     seed = phrase_tree.possible_next_words[-1]  # if 文外で remove するため pop ではない
                 phrase_tree.possible_next_words.remove(seed)
-                if phrase_tree.possible_next_words == []:
-                    logger.info('possible_next_words is []')
-
-                # TODO: else の場合，max_iterations を回しているところまで戻るように例外を返す
 
                 if seed in self._get_word_list() and \
                    ChainsData.chains_data[seed] != [None]:

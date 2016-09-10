@@ -15,7 +15,7 @@ class WordsData(list):
 
     """
     単語の情報を網羅したデータクラス．
-    WordsData のリスト．
+    Words のリスト．
     """
 
     words_list = list()

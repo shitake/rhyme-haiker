@@ -43,6 +43,70 @@ class TestPhraseTree(unittest.TestCase):
         }
     ]
 
+    SUCCESS_WORDS = [
+        {
+            "word": "あああ",
+            "vowel": "アアア",
+            "length": 3,
+            "part": "名詞"
+        },
+        {
+            "word": "いいい",
+            "vowel": "イイイ",
+            "length": 3,
+            "part": "名詞"
+        },
+        {
+            "word": "ううう",
+            "vowel": "ウウウ",
+            "length": 3,
+            "part": "名詞"
+        }
+    ]
+    SUCCESS_CHAINS = {
+        ('あああ', 'いいい', 'ううう'): [
+            'あああ'
+        ],
+        ('いいい', 'ううう', 'あああ'): [
+            'いいい'
+        ],
+        ('ううう', 'あああ', 'いいい'): [
+            'ううう'
+        ]
+    }
+
+    SUCCESS_WORDS_TWELVE = [
+        {
+            "word": "ああああ",
+            "vowel": "アアアア",
+            "length": 4,
+            "part": "名詞"
+        },
+        {
+            "word": "いいいい",
+            "vowel": "イイイイ",
+            "length": 4,
+            "part": "名詞"
+        },
+        {
+            "word": "うううう",
+            "vowel": "ウウウウ",
+            "length": 4,
+            "part": "名詞"
+        }
+    ]
+    SUCCESS_CHAINS_TWELVE = {
+        ('ああああ', 'いいいい', 'うううう'): [
+            'ああああ'
+        ],
+        ('いいいい', 'うううう', 'ああああ'): [
+            'いいいい'
+        ],
+        ('うううう', 'ああああ', 'いいいい'): [
+            'うううう'
+        ]
+    }
+
     def test_get_text(self):
         WordsData(self.WORDS)
         word_tuple = (
@@ -71,10 +135,13 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        pt = PhraseTree.define_root()
-        pt.next_tree = PhraseTree(current_words=word_tuple)
+        # pt = PhraseTree.define_root()
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
+        second_tree = PhraseTree(current_words=word_tuple,
+                                 parent=root)
+        root.next_tree = second_tree
         self.assertEqual(
-            pt.get_text(pt),
+            PhraseTree.get_text(second_tree),
             '古池蛙あ'
         )
 
@@ -104,9 +171,12 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        next_pt = PhraseTree(next_word_tuple, parent=pt)
+        third_tree = PhraseTree(current_words=next_word_tuple,
+                                possible_next_words=list(self.SUCCESS_CHAINS.keys()),
+                                parent=second_tree)
+        second_tree.next_tree = third_tree
         self.assertEqual(
-            pt.get_text(next_pt),
+            PhraseTree.get_text(third_tree),
             '古池蛙あい'
         )
 
@@ -138,10 +208,13 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        pt = PhraseTree.define_root()
-        pt.next_tree = PhraseTree(current_words=word_tuple)
+        # pt = PhraseTree.define_root()
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
+        second_tree = PhraseTree(current_words=word_tuple,
+                                 parent=root)
+        root.next_tree = second_tree
         self.assertEqual(
-            pt.get_text_list(pt),
+            PhraseTree.get_text_list(second_tree),
             ['古池', '蛙', 'あ']
         )
 
@@ -171,10 +244,56 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        next_pt = PhraseTree(next_word_tuple, parent=pt)
+        # next_pt = PhraseTree(next_word_tuple, parent=root)
+        third_tree = PhraseTree(current_words=next_word_tuple,
+                                possible_next_words=list(self.SUCCESS_CHAINS.keys()),
+                                parent=second_tree)
+        second_tree.next_tree = third_tree
         self.assertEqual(
-            pt.get_text_list(next_pt),
+            PhraseTree.get_text_list(third_tree),
             ['古池', '蛙', 'あ', 'いい']
+        )
+
+    def test_get_text_list_first_and_last(self):
+        """
+        最初のツリー(root の次)に対して
+        """
+        WordsData.words_data = self.SUCCESS_WORDS_TWELVE
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS_TWELVE.keys()))
+        # root.next_tree = PhraseTree(current_words=self.SUCCESS_WORDS_TWELVE)
+        word_tuple = (
+            Words(
+                {
+                    "word": "ああああ",
+                    "vowel": "アアアア",
+                    "length": 4,
+                    "part": "名詞"
+                }
+            ),
+            Words(
+                {
+                    "word": "いいいい",
+                    "vowel": "イイイイ",
+                    "length": 4,
+                    "part": "名詞"
+                }
+            ),
+            Words(
+                {
+                    "word": "うううう",
+                    "vowel": "ウウウウ",
+                    "length": 4,
+                    "part": "名詞"
+                }
+            )
+        )
+        next_pt = PhraseTree(current_words=word_tuple,
+                             possible_next_words=list(self.SUCCESS_CHAINS_TWELVE.keys()),
+                             parent=root)
+        root.next_tree = next_pt
+        self.assertEqual(
+            root.get_text_list(next_pt),
+            ['ああああ', 'いいいい', 'うううう']
         )
 
     def test_get_text_vowel(self):
@@ -205,10 +324,13 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        pt = PhraseTree.define_root()
-        pt.next_tree = PhraseTree(current_words=word_tuple)
+        # pt = PhraseTree.define_root()
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
+        second_tree = PhraseTree(current_words=word_tuple,
+                                 parent=root)
+        root.next_tree = second_tree
         self.assertEqual(
-            pt.get_text_vowel(pt),
+            root.get_text_vowel(second_tree),
             'ウウイエアエウア'
         )
 
@@ -238,9 +360,12 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        next_pt = PhraseTree(current_words=next_word_tuple, parent=pt)
+        third_tree = PhraseTree(current_words=next_word_tuple,
+                                possible_next_words=list(self.SUCCESS_CHAINS.keys()),
+                                parent=second_tree)
+        second_tree.next_tree = third_tree
         self.assertEqual(
-            pt.get_text_vowel(next_pt),
+            root.get_text_vowel(third_tree),
             'ウウイエアエウアイイ'
         )
 
@@ -280,10 +405,12 @@ class TestPhraseTree(unittest.TestCase):
             #       "length": 1,
             #       "part": "名詞")
         )
-        pt = PhraseTree.define_root()
-        pt.next_tree = PhraseTree(current_words=word_tuple)
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
+        second_tree = PhraseTree(current_words=word_tuple,
+                                 parent=root)
+        root.next_tree = second_tree
         self.assertEqual(
-            pt.count_phrase_len(pt),
+            root.count_phrase_len(second_tree),
             8
         )
 
@@ -317,9 +444,10 @@ class TestPhraseTree(unittest.TestCase):
             #       "length": 1,
             #       "part": "名詞")
         )
-        next_pt = PhraseTree(next_word_tuple, parent=pt)
+        third_tree = PhraseTree(next_word_tuple,
+                                parent=second_tree)
         self.assertEqual(
-            PhraseTree.count_phrase_len(next_pt),
+            PhraseTree.count_phrase_len(third_tree),
             10
         )
 
@@ -418,11 +546,12 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        pt = PhraseTree.define_root()
+        # pt = PhraseTree.define_root()
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         next_tree = PhraseTree(current_words=word_tuple)
-        pt.next_tree = next_tree
+        root.next_tree = next_tree
         self.assertEqual(
-            pt.get_last_tree(pt),
+            root.get_last_tree(root),
             next_tree
         )
 
