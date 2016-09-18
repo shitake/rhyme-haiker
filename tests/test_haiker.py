@@ -11,8 +11,6 @@ import unittest
 
 class TestHaiker(unittest.TestCase):
 
-    ROOT = tuple('root')
-
     SUCCESS_WORDS = [
         {
             "word": "あああ",
@@ -42,6 +40,37 @@ class TestHaiker(unittest.TestCase):
         ],
         ('ううう', 'あああ', 'いいい'): [
             'ううう'
+        ]
+    }
+    SUCCESS_WORDS_TWELVE = [
+        {
+            "word": "ああああ",
+            "vowel": "アアアア",
+            "length": 4,
+            "part": "名詞"
+        },
+        {
+            "word": "いいいい",
+            "vowel": "イイイイ",
+            "length": 4,
+            "part": "名詞"
+        },
+        {
+            "word": "うううう",
+            "vowel": "ウウウウ",
+            "length": 4,
+            "part": "名詞"
+        }
+    ]
+    SUCCESS_CHAINS_TWELVE = {
+        ('ああああ', 'いいいい', 'うううう'): [
+            'ああああ'
+        ],
+        ('いいいい', 'うううう', 'ああああ'): [
+            'いいいい'
+        ],
+        ('うううう', 'ああああ', 'いいいい'): [
+            'うううう'
         ]
     }
     WORDS = [
@@ -109,11 +138,10 @@ class TestHaiker(unittest.TestCase):
     TWELVE = 12
 
     def test_construct_syllable(self):
-        WordsData.words_data = self.SUCCESS_WORDS
-        ChainsData.chains_data = self.SUCCESS_CHAINS
+        WordsData.words_data = self.SUCCESS_WORDS_TWELVE
+        ChainsData.chains_data = self.SUCCESS_CHAINS_TWELVE
         haiker = Haiker()
-        root = PhraseTree(current_words=self.ROOT,
-                          possible_next_words=list(ChainsData.chains_data.keys()))
+        root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS_TWELVE.keys()))
 
         self.assertIsInstance(haiker.construct_syllable(root, self.TWELVE),
                               PhraseTree)
@@ -141,8 +169,7 @@ class TestHaiker(unittest.TestCase):
         WordsData.words_data = self.EMPTY_LIST
         ChainsData.chains_data = self.EMPTY_DICT
         haiker = Haiker()
-        root = PhraseTree(current_words=self.ROOT,
-                          possible_next_words=list(ChainsData.chains_data.keys()))
+        root = PhraseTree.define_root(possible_next_words=list(ChainsData.chains_data.keys()))
 
         with self.assertRaises(ValueError):
             haiker.construct_syllable(root, self.TWELVE)
@@ -164,8 +191,7 @@ class TestHaiker(unittest.TestCase):
         ]
         ChainsData.chains_data = {"あ": ["い"]}
         haiker = Haiker()
-        root = PhraseTree(current_words=self.ROOT,
-                          possible_next_words=list(ChainsData.chains_data.keys()))
+        root = PhraseTree.define_root(possible_next_words=list(ChainsData.chains_data.keys()))
         with self.assertRaises(ValueError):
             haiker.construct_syllable(root, self.TWELVE)
 
@@ -203,8 +229,10 @@ class TestHaiker(unittest.TestCase):
                 }
             )
         )
-        pt = PhraseTree.define_root()
-        pt.next_tree = PhraseTree(current_words=word_tuple)
+        root = PhraseTree.define_root(possible_next_words=list(ChainsData.chains_data.keys()))
+        second_tree = PhraseTree(current_words=word_tuple,
+                                 parent=root)
+        root.next_tree = second_tree
 
         # Phrase 初期状態
         # self.assertEqual(
@@ -221,7 +249,7 @@ class TestHaiker(unittest.TestCase):
         # )
 
         # 中間処理
-        haiker._post_proc(pt)
+        haiker._post_proc(second_tree)
 
         # Phrase 代入済み
         self.assertNotEqual(

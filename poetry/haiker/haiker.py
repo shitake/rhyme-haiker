@@ -134,7 +134,7 @@ class Haiker:
           Phrase インスタンス
         """
         assert phrase_tree is not None
-        assert not PhraseTree.is_root(phrase_tree)
+        assert not PhraseTree.is_root(phrase_tree), "phrase_tree is not root"
         # TODO: 必要なデータをラップしたコンテナクラスを返却する
         Phrase.text_list = PhraseTree.get_text_list(phrase_tree)
         Phrase.last_words = PhraseTree.get_last_words(phrase_tree)
