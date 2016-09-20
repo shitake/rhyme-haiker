@@ -179,3 +179,15 @@ class PhraseTree(object):
             return phrase_tree
         else:
             return cls.get_last_tree(phrase_tree.next_tree)
+
+    @classmethod
+    def disclose(cls, phrase_tree, place):
+        """
+        デバッグ用
+        """
+        if not cls.is_root(phrase_tree):
+            print("place: ", place)
+            print(phrase_tree.current_words[0].word)
+            print(phrase_tree.current_words[1].word)
+            print(phrase_tree.current_words[2].word)
+            print(phrase_tree.possible_next_words)

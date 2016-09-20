@@ -32,28 +32,51 @@ class Haiker:
         """
         俳句を詠む．
         """
-        root = PhraseTree.define_root(possible_next_words=self._get_word_list())
-        first_phrase_tree = self.construct_syllable(root, self.TWELVE)
-        first_last_vowel = Phrase.last_vowel
-        first_text_list = Phrase.text_list
-
-        # TODO: ここで押韻チェックしてだめなら再処理
-        loop_limit = 200
-        current_loop = 1
+        first_loop_limit = 500
+        first_current_loop = 0
         while True:
-            second_phrase_tree = self.construct_syllable(first_phrase_tree, self.FIVE)
-            second_last_vowel = Phrase.last_vowel
-            if Rhymer.is_rhymed(first_last_vowel, second_last_vowel):
-                break
-            current_loop += 1
-            if current_loop == loop_limit:
+            print("+++++++++", first_current_loop, "+++++++++++++++++++++")
+
+            first_current_loop += 1
+            if first_current_loop == first_loop_limit:
                 return "***** だめでした *****"
 
-        haiku = "".join(first_text_list + Phrase.text_list)
-        print(first_last_vowel, Phrase.last_vowel)
-        logger.debug("[Haiku] >>> {}".format(haiku))
+            try:
+                root = PhraseTree.define_root(possible_next_words=self._get_word_list())
+                first_phrase_tree = self.construct_syllable(root, self.FIVE)
+                first_last_vowel = Phrase.last_vowel
+                first_text_list = Phrase.text_list
+                PhraseTree.disclose(first_phrase_tree, "first -------------")
+            except ValueError:
+                print("first ValueError *******")
+                continue
 
-        return haiku
+            try:
+                root = PhraseTree.define_root(possible_next_words=first_phrase_tree.possible_next_words)
+                second_phrase_tree = self.construct_syllable(root, self.SEVEN)
+                second_last_vowel = Phrase.last_vowel
+                second_text_list = Phrase.text_list
+                PhraseTree.disclose(second_phrase_tree, "second -------------")
+            except ValueError:
+                print("second ValueError *******")
+                continue
+
+            try:
+                root = PhraseTree.define_root(possible_next_words=second_phrase_tree.possible_next_words)
+                third_phrase_tree = self.construct_syllable(root, self.FIVE)
+                third_last_vowel = Phrase.last_vowel
+                third_text_list = Phrase.text_list
+                PhraseTree.disclose(third_phrase_tree, "third -------------")
+            except ValueError:
+                print("third ValueError *******")
+                continue
+
+            if Rhymer.is_rhymed(second_last_vowel, third_last_vowel):
+                haiku = "".join(first_text_list + second_text_list + third_text_list)
+                print(first_last_vowel, second_last_vowel, third_last_vowel)
+                logger.debug("[Haiku] >>> {}".format(haiku))
+
+                return haiku
 
     def property_initializer(func):
         """
@@ -73,7 +96,7 @@ class Haiker:
         return wrapper
 
     @property_initializer
-    def construct_syllable(self, phrase_tree, expected_vowel_len):
+    def construct_syllable(self, phrase_tree, expected_vowel_len, noun=False):
         """
         最初の音節を作成する．
 
@@ -90,7 +113,9 @@ class Haiker:
             while True:
                 # 単語タプルをランダムに1つ取得
                 try:
+                    PhraseTree.disclose(phrase_tree, "construct ---------")
                     phrase_tree, phrase_tree.next_tree = self._get_word(phrase_tree)
+                    PhraseTree.disclose(phrase_tree, "construct 2 ---------")
                 except ValueError:
                     logger.info('*** Cnstruction failed ***')
                     raise
