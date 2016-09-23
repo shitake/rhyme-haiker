@@ -1,5 +1,0 @@
-setup.py
-poetry.egg-info/PKG-INFO
-poetry.egg-info/SOURCES.txt
-poetry.egg-info/dependency_links.txt
-poetry.egg-info/top_level.txt
