@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import random
 
 
@@ -79,6 +80,4 @@ if __name__ == '__main__':
     n = 3
     tokens = ["古池", "あ", "古池", "い", "古池", "う", "蛙", "あ", "蛙", "い"]
     model = m.build_model(tokens, n)
-    print(model)
     generated = m.generate(model, n)
-    print(generated)

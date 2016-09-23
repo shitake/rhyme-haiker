@@ -5,7 +5,6 @@ from logging import StreamHandler
 from logging import DEBUG
 import random
 
-# from poetry.data_constructor.words import Words
 from poetry.data_constructor.chains_data import ChainsData
 from poetry.data_constructor.words_data import WordsData
 from poetry.haiker.phrase import Phrase
@@ -35,7 +34,7 @@ class Haiker:
         first_loop_limit = 500
         first_current_loop = 0
         while True:
-            print("+++++++++", first_current_loop, "+++++++++++++++++++++")
+            logger.debug('+++ current loop: {} +++'.format(first_current_loop))
 
             first_current_loop += 1
             if first_current_loop == first_loop_limit:
@@ -44,11 +43,10 @@ class Haiker:
             try:
                 root = PhraseTree.define_root(possible_next_words=self._get_word_list())
                 first_phrase_tree = self.construct_syllable(root, self.FIVE)
-                first_last_vowel = Phrase.last_vowel
                 first_text_list = Phrase.text_list
                 PhraseTree.disclose(first_phrase_tree, "first -------------")
             except ValueError:
-                print("first ValueError *******")
+                logger.debug('***** first ValueError *****')
                 continue
 
             try:
@@ -58,7 +56,7 @@ class Haiker:
                 second_text_list = Phrase.text_list
                 PhraseTree.disclose(second_phrase_tree, "second -------------")
             except ValueError:
-                print("second ValueError *******")
+                logger.debug('***** second ValueError *****')
                 continue
 
             try:
@@ -68,12 +66,11 @@ class Haiker:
                 third_text_list = Phrase.text_list
                 PhraseTree.disclose(third_phrase_tree, "third -------------")
             except ValueError:
-                print("third ValueError *******")
+                logger.debug('***** third ValueError *****')
                 continue
 
             if Rhymer.is_rhymed(second_last_vowel, third_last_vowel):
                 haiku = "".join(first_text_list + second_text_list + third_text_list)
-                print(first_last_vowel, second_last_vowel, third_last_vowel)
                 logger.debug("[Haiku] >>> {}".format(haiku))
 
                 return haiku
@@ -85,12 +82,7 @@ class Haiker:
 
         def wrapper(self, phrase_tree, expected_vowel_len):
             logger.debug("[Initialized]")
-
             ret = func(self, phrase_tree, expected_vowel_len)
-
-            # self.haiku = self.first_five + self.seven + self.last_five  # TODO: コンテナ化
-            # self.haiku = self.first_syllable + self.last_five  # TODO: コンテナ化
-
             return ret
 
         return wrapper
@@ -109,7 +101,7 @@ class Haiker:
         # phrase_tree には，current と next が格納済み
         while True:
             if self._is_empty_first_node(phrase_tree):
-                raise ConstructionError('First node has become empty.')  # TODO: 独自クラス必要か再考
+                raise ConstructionError('First node has become empty.')
             while True:
                 # 単語タプルをランダムに1つ取得
                 try:
@@ -129,7 +121,7 @@ class Haiker:
                         phrase_tree = self._back_prev_word_list(phrase_tree)
                     except ValueError:
                         logger.info('*** Cnstruction failed ***')
-                        raise  # TODO: return して終了させる？
+                        raise
                 elif self._is_n_char(expected_vowel_len, text_vowel_len):
                     assert phrase_tree is not None, "phrase_tree is None"
                     self._post_proc(phrase_tree.next_tree)
@@ -160,7 +152,6 @@ class Haiker:
         """
         assert phrase_tree is not None
         assert not PhraseTree.is_root(phrase_tree), "phrase_tree is not root"
-        # TODO: 必要なデータをラップしたコンテナクラスを返却する
         Phrase.text_list = PhraseTree.get_text_list(phrase_tree)
         Phrase.last_words = PhraseTree.get_last_words(phrase_tree)
         Phrase.last_vowel = PhraseTree.get_text_vowel(phrase_tree)
@@ -186,7 +177,6 @@ class Haiker:
         """
         next_tree = None
         for index in range(max_iterations):
-            # TODO: phrase_tree が None になる場合がある
             if not phrase_tree.possible_next_words:
                 # possible_next_words が None, []
                 if PhraseTree.is_root(phrase_tree):
@@ -202,8 +192,6 @@ class Haiker:
                    ChainsData.chains_data[seed] != [None]:
                     if ChainsData.chains_data[seed] == [None]:
                         # この時点では，seed は文字列のタプルであり，Words クラスのタプルではない
-                        # TODO: seed 取得し直し
-                        #       possible_next_words から seed を消し，別のデータを seed へ
                         pass
                     assert ChainsData.chains_data[seed] != [None], "ChainsData.chains_data: {}".format(ChainsData.chains_data)
                     next_tree = PhraseTree(current_words=seed,
@@ -222,7 +210,7 @@ class Haiker:
         for word_dict in WordsData.words_data:
             if word_dict[self.WORD] == word:
                 return word_dict[self.VOWEL]
-        raise ValueError('Vowel does not exist. WordsData is broken.')  # TODO: 例外処理
+        raise ValueError('Vowel does not exist. WordsData is broken.')
 
     def _back_prev_word_list(self, phrase_tree):
         """
@@ -231,12 +219,6 @@ class Haiker:
         if PhraseTree.is_root(phrase_tree):
             raise ValueError('Impossible to back prev word list')
         return phrase_tree.parent
-
-    # def _create_completed_text(self):
-    #     """完成形の文章を返す"""
-    #     # TODO: 使用方法が限定されすぎなので一般化する
-    #     logger.debug("[Completed]: " + self.text + self.word)
-    #     return self.text + self.word, self.text_vowel + self.vowel
 
     def _is_n_char(self, n, text_vowel_len):
         """

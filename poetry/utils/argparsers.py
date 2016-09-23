@@ -78,13 +78,11 @@ def main():
     args = parser.parse_args()
 
     try:
-        # args.db = db
         if hasattr(args, 'func'):
             args.func(args)
         else:
             parser.print_help()
     finally:
-        # db.close()
         pass
 
 

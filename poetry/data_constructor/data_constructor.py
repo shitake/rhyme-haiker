@@ -31,11 +31,7 @@ class DataConstructor:
         インターフェイス
         テーブル挿入用データを作成する．
         """
-        # TODO: インターフェイス修正
-        #       分かち書き後の単語1つを入力データとして受け取る
-        #       方がよさそう
-
-        return self._construct_parsed_data(read_data)  # TODO: 修正対象
+        return self._construct_parsed_data(read_data)
 
     def _construct_parsed_data(self, read_data):
         """
@@ -59,7 +55,6 @@ class DataConstructor:
         """
         分かち書き後のデータリストを csv のリストへ変換．
         """
-        # TODO: Utils クラスへ引越
         if not isinstance(splited_word_data, str):
             logger.warning(
                 "Input value is not String: %s." % splited_word_data

@@ -150,18 +150,6 @@ class TestHaiker(unittest.TestCase):
         self.assertEqual(PhraseTree.count_phrase_len(pt),
                          self.TWELVE)
 
-        # haiker = Haiker(
-        #     "",
-        #     {
-        #         "a": ["i", "u"],
-        #         "i": [],
-        #     }
-        # )
-        # self.assertNotEqual(
-        #     len(haiker.construct_first_five()),
-        #     5
-        # )
-
     def test_construct_syllable_initialize_empty(self):
         """
         生成中，単語の候補リストが空担った場合
@@ -234,20 +222,6 @@ class TestHaiker(unittest.TestCase):
                                  parent=root)
         root.next_tree = second_tree
 
-        # Phrase 初期状態
-        # self.assertEqual(
-        #     Phrase.text_list,
-        #     list()
-        # )
-        # self.assertEqual(
-        #     Phrase.last_words,
-        #     tuple()
-        # )
-        # self.assertIsInstance(
-        #     Phrase.last_vowel,
-        #     property
-        # )
-
         # 中間処理
         haiker._post_proc(second_tree)
 
@@ -264,9 +238,6 @@ class TestHaiker(unittest.TestCase):
             Phrase.last_vowel,
             str
         )
-
-    def test_get_word(self):
-        pass
 
     def test_get_vowel(self):
         WordsData.words_data = (
@@ -314,15 +285,6 @@ class TestHaiker(unittest.TestCase):
         self.assertFalse(
             haiker._is_less_than_n_char(5, 5)
         )
-
-    # def test_compose(self):
-    #     haiker = Haiker(
-    #         words=TestHaiker.WORDS,
-    #         chains=TestHaiker.CHAINS
-    #     )
-    #     self.assertTrue(
-    #         haiker.compose()
-    #     )
 
 
 if __name__ == '__main__':

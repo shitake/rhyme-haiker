@@ -44,7 +44,7 @@ class WordsDataConstructor(DataConstructor):
         単語，品詞，読みの母音，読みの字数の辞書を返す
         """
         if not isinstance(csv_data, list):
-            logger.warning("Input value is not List: %s." % csv_data)
+            logger.warning('Input value is not List: %s.' % csv_data)
 
         self.yomi = csv_data[self.PRONOUNCIATION]
         self._substitute_vowel()
@@ -66,7 +66,7 @@ class WordsDataConstructor(DataConstructor):
             self.vowel_pronounciation = \
                 self._substitute_straight_syllables(substituted_yomi)
         except SubstitutionError as e:
-            print('Substitution was incompleted.', e.origin, e.value)
+            logger.warning('Substitution was incompleted. %s: %s' % e.origin, e.value)
 
     def _substitute_diphthong(self):
         """
@@ -181,10 +181,3 @@ class SubstitutionError(Exception):
 
     def __str__(self):
         return repr(self.origin, self.value)
-
-
-# if __name__ == '__main__':
-#     corpus =
-#     dc = WordsDataConstructor()
-#     parsed = dc.construct_data(corpus)
-#     print(repr(parsed))

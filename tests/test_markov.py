@@ -55,13 +55,6 @@ class TestMarkov(unittest.TestCase):
             }
         )
 
-    # def test_token_to_model(self):
-    #     m = Markov()
-
-    #     # 初期状態
-    #     model = dict()
-    #     gram
-
 
 if __name__ == '__main__':
     unittest.main()

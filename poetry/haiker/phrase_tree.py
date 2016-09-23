@@ -27,10 +27,6 @@ class PhraseTree(object):
         self.next_tree = next_tree
         self.parent = parent
 
-        # self.words_list = words_list  # WordsData クラスのデータ
-    # def pop(self):
-    #     return self.next_words.pop()
-
     @property
     def current_words(self):
         return self._current_words
@@ -41,9 +37,6 @@ class PhraseTree(object):
         文字列タプルから Words クラスタプルを作成．
         """
         assert words_tuple is not None, 'words_tuple is None'
-        # if words_tuple is None:
-        #     # return words_tuple
-        #     pass
         if words_tuple == self.ROOT:
             pass
         else:
@@ -69,7 +62,7 @@ class PhraseTree(object):
         for word_dict in WordsData.words_data:
             if word_dict["word"] == word:
                 return word_dict
-        return None  # TODO: None を返さず例外処理する
+        return
 
     @classmethod
     def define_root(cls, possible_next_words=list()):
@@ -85,7 +78,6 @@ class PhraseTree(object):
         現在の文章を返す．
         """
         if cls.is_root(phrase_tree.parent):
-            # assert phrase_tree.current_words is not None, "phrase_tree may be root."
             text_list = [word.word for word in phrase_tree.current_words]
             return cls._list2str(text_list)
         else:
@@ -100,7 +92,6 @@ class PhraseTree(object):
         if cls.is_root(phrase_tree.parent):
             return [word.word for word in phrase_tree.current_words]
         else:
-            # TODO: root -> next_ree で完結した場合の挙動を確認(詳細trello)
             last_word = [phrase_tree.current_words[-1].word]
             return cls.get_text_list(phrase_tree.parent) + last_word
 
@@ -122,9 +113,6 @@ class PhraseTree(object):
         現在の文字数を返す．
         phrase_tree.next_tree が None ではないことが前提．
         """
-        # TODO: なぜかここだけ is_root() に parent を渡していた．
-        #       理由がなければ parent 版は削除しても構わない．
-        # if cls.is_root(phrase_tree.parent):
         if cls.is_root(phrase_tree.parent):
             # 先頭3語
             assert phrase_tree is not None, 'phrase_tree is None'
@@ -149,11 +137,6 @@ class PhraseTree(object):
             return phrase_tree.current_words
         else:
             return cls.get_last_words(phrase_tree.next_tree)
-
-    # TODO: ツリーの親子関係を削除
-    #       ツリーを戻る際に行う必要がある
-    def del_relation(parent_tree, next_tree):
-        pass
 
     @classmethod
     def is_root(cls, phrase_tree):

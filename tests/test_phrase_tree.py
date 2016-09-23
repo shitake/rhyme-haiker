@@ -135,7 +135,6 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        # pt = PhraseTree.define_root()
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         second_tree = PhraseTree(current_words=word_tuple,
                                  parent=root)
@@ -208,7 +207,6 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        # pt = PhraseTree.define_root()
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         second_tree = PhraseTree(current_words=word_tuple,
                                  parent=root)
@@ -244,7 +242,6 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        # next_pt = PhraseTree(next_word_tuple, parent=root)
         third_tree = PhraseTree(current_words=next_word_tuple,
                                 possible_next_words=list(self.SUCCESS_CHAINS.keys()),
                                 parent=second_tree)
@@ -260,7 +257,6 @@ class TestPhraseTree(unittest.TestCase):
         """
         WordsData.words_data = self.SUCCESS_WORDS_TWELVE
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS_TWELVE.keys()))
-        # root.next_tree = PhraseTree(current_words=self.SUCCESS_WORDS_TWELVE)
         word_tuple = (
             Words(
                 {
@@ -324,7 +320,6 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        # pt = PhraseTree.define_root()
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         second_tree = PhraseTree(current_words=word_tuple,
                                  parent=root)
@@ -396,14 +391,6 @@ class TestPhraseTree(unittest.TestCase):
                     "part": "名詞"
                 }
             )
-            # Words("word": "い",
-            #       "vowel": "イ",
-            #       "length": 1,
-            #       "part": "名詞"),
-            # Words("word": "う",
-            #       "vowel": "ウ",
-            #       "length": 1,
-            #       "part": "名詞")
         )
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         second_tree = PhraseTree(current_words=word_tuple,
@@ -439,10 +426,6 @@ class TestPhraseTree(unittest.TestCase):
                     "part": "名詞"
                 }
             )
-            # Words("word": "う",
-            #       "vowel": "ウ",
-            #       "length": 1,
-            #       "part": "名詞")
         )
         third_tree = PhraseTree(next_word_tuple,
                                 parent=second_tree)
@@ -450,9 +433,6 @@ class TestPhraseTree(unittest.TestCase):
             PhraseTree.count_phrase_len(third_tree),
             10
         )
-
-    # def test_search_dict(self):
-    #     words_data = WordsData({ words: })
 
     def test_get_last_words(self):
         WordsData(self.WORDS)
@@ -546,7 +526,6 @@ class TestPhraseTree(unittest.TestCase):
                 }
             )
         )
-        # pt = PhraseTree.define_root()
         root = PhraseTree.define_root(possible_next_words=list(self.SUCCESS_CHAINS.keys()))
         next_tree = PhraseTree(current_words=word_tuple)
         root.next_tree = next_tree

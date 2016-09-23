@@ -7,7 +7,6 @@ from logging import DEBUG
 import pickle
 
 import poetry
-# from poetry.utils.multi_dimentional_array_encoder import MultiDimentionalArrayEncoder
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -33,17 +32,10 @@ class DataExporter:
         self._export(json.dumps(self.chains_data, ensure_ascii=False),
                      json.dumps(self.words_data, ensure_ascii=False))
 
-    # def _dumps_tuple(self, data):
-    #     """
-    #     tuple を含むデータを json で扱えるようにする．
-    #     """
-    #     return {str(k): v for k, v in data.items()}
-
     def export_pickle(self):
         """
         Pickle で保存．
         """
-        print(pickle.dumps(self.chains_data))
         self._export(pickle.dumps(self.chains_data),
                      pickle.dumps(self.words_data))
 

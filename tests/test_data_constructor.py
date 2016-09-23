@@ -6,47 +6,6 @@ import unittest
 
 class TestDataConstructor(unittest.TestCase):
 
-    # def test_construct_parsed_data(self):
-    #     dc = DataConstructor()
-
-    #     read_data = "気象庁"
-    #     self.assertEqual(
-    #         dc._construct_parsed_data(read_data),
-    #         [
-    #             {
-    #                 "word": "気象庁",
-    #                 "part": "名詞",
-    #                 "vowel": "イオーオー",
-    #                 "length": 5
-    #             },
-    #         ]
-    #     )
-
-    #     read_data = "雨が降る"
-    #     self.assertEqual(
-    #         dc._construct_parsed_data(read_data),
-    #         [
-    #             {
-    #                 "word": "雨",
-    #                 "part": "名詞",
-    #                 "vowel": "アエ",
-    #                 "length": 2
-    #             },
-    #             {
-    #                 "word": "が",
-    #                 "part": "助詞",
-    #                 "vowel": "ア",
-    #                 "length": 1
-    #             },
-    #             {
-    #                 "word": "降る",
-    #                 "part": "動詞",
-    #                 "vowel": "ウウ",
-    #                 "length": 2
-    #             },
-    #         ]
-    #     )
-
     def test_delimit(self):
         parsed_text = "明日\t名詞,副詞可能,*,*,*,*,明日,アシタ,アシタ\nは\t助詞,係助詞,*,*,*,*,は,ハ,ワ\n雨\t名詞,一般,*,*,*,*,雨,アメ,アメ\nが\t助詞,格助詞,一般,*,*,*,が,ガ,ガ\n降る\t動詞,自立,*,*,五段・ラ行,基本形,降る,フル,フル\nEOS\n"
         dc = DataConstructor()

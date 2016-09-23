@@ -24,33 +24,3 @@ class Words(object):
         self.vowel = word_dict[self.VOWEL]
         self.length = word_dict[self.LENGTH]
         self.part = word_dict[self.PART]
-
-    # @classmethod
-    # def tuple2words(cls, words_tuple):
-    #     """
-    #     文字列タプルから Words クラスタプルを作成．
-    #     """
-    #     if words_tuple is None:
-    #         return words_tuple
-    #     else:
-    #         return (cls._dispatch(word) for word in words_tuple)
-
-    # @classmethod
-    # def _dispatch(cls, word):
-    #     """
-    #     Words クラスオブジェクトの場合，そのまま返す．
-    #     そうでない場合，Words クラスオブジェクトを返す．
-    #     """
-    #     if isinstance(word, Words):
-    #         return word
-    #     else:
-    #         return cls._search_dict(word)
-
-    # def _search_dict(cls, word):
-    #     """
-    #     単語をもとに，対応する辞書を検索．
-    #     """
-    #     for word_dict in self.words:
-    #         if word_dict.word == word:
-    #             return word_dict
-    #     return None
