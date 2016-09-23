@@ -1,11 +1,11 @@
 from setuptools import setup
 
-with open('README.txt') as f:
+with open('README.md') as f:
     readme = f.read()
 
 setup(
     name="RhymeHaiker",
-    version="1.1.0",
+    version="1.1.1",
     description='A rhyming haiku generator.',
     long_description=readme,
     url='',
