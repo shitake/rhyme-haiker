@@ -7,7 +7,6 @@ from logging import DEBUG
 import pickle
 
 import poetry
-# from poetry.utils.multi_dimentional_array_encoder import MultiDimentionalArrayEncoder
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -19,40 +18,17 @@ logger.addHandler(handler)
 class DataExporter:
 
     OUTPUT_DIR = poetry.__path__[0] + '/../output/'
-    CHAINS_FILE_NAME = "chains.pickle"
     WORDS_FILE_NAME = "words.pickle"
 
-    def __init__(self, chains_data, words_data):
-        self.chains_data = chains_data
+    def __init__(self, words_data):
         self.words_data = words_data
-
-    def export_json(self):
-        """
-        json に出力．
-        """
-        self._export(json.dumps(self.chains_data, ensure_ascii=False),
-                     json.dumps(self.words_data, ensure_ascii=False))
-
-    # def _dumps_tuple(self, data):
-    #     """
-    #     tuple を含むデータを json で扱えるようにする．
-    #     """
-    #     return {str(k): v for k, v in data.items()}
 
     def export_pickle(self):
         """
         Pickle で保存．
         """
-        print(pickle.dumps(self.chains_data))
-        self._export(pickle.dumps(self.chains_data),
-                     pickle.dumps(self.words_data))
+        self._export(pickle.dumps(self.words_data))
 
-    def _export(self, chains_data, words_data):
-        with open(self.OUTPUT_DIR + DataExporter.CHAINS_FILE_NAME,
-                  mode='wb'
-                  ) as f:
-            f.write(chains_data)
-        with open(self.OUTPUT_DIR + DataExporter.WORDS_FILE_NAME,
-                  mode='wb'
-                  ) as f:
+    def _export(self, words_data):
+        with open(self.OUTPUT_DIR + DataExporter.WORDS_FILE_NAME, mode='wb') as f:
             f.write(words_data)

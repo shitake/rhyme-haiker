@@ -21,23 +21,40 @@ class WordsDataConstructor(DataConstructor):
         親クラスのメソッドをオーバーライド．
         下記のようなデータ構造を返す．
         [
-            {
-                "word": "あ",
-                "vowel": "ア",
-                "length": 1,
-                "part": "名詞"
-            },
-            {
-                "word": "い",
-                "vowel": "イ",
-                "length": 1,
-                "part": "名詞"
-            }
+            [
+                {
+                    "word": "あ",
+                    "vowel": "ア",
+                    "length": 1,
+                    "part": "名詞"
+                },
+                {
+                    "word": "い",
+                    "vowel": "イ",
+                    "length": 1,
+                    "part": "名詞"
+                }
+            ],
+            [
+                {
+                    "word": "か",
+                    "vowel": "カ",
+                    "length": 1,
+                    "part": "名詞"
+                },
+                {
+                    "word": "き",
+                    "vowel": "キ",
+                    "length": 1,
+                    "part": "名詞"
+                }
+            ]
         ]
         """
-        return [
-            self._construct_words_dict(csv_data) for csv_data in csv_data_list
-        ]
+        return [[self._construct_words_dict(csv_data) for csv_data in sentence] for sentence in csv_data_list]
+        # return [
+        #     self._construct_words_dict(csv_data) for sentence in csv_data_list for csv_data in sentence
+        # ]
 
     def _construct_words_dict(self, csv_data):
         """
