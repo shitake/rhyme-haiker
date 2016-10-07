@@ -16,8 +16,8 @@ logger.addHandler(handler)
 
 class WordsDataConstructor(DataConstructor):
 
-    FIVE_STR = 'seven'
-    SEVEN_STR = 'five'
+    FIVE_STR = 'five'
+    SEVEN_STR = 'seven'
 
     LENGTH = 'length'
 
