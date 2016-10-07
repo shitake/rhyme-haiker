@@ -26,7 +26,7 @@ class Rhymer:
           first_pron: 一つ目の読み
           second_pron: 二つ目の読み
         """
-        if first_pron[-1] == second_pron[-1]:
+        if first_pron == second_pron:
             return True
         else:
             return False

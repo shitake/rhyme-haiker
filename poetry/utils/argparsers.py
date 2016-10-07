@@ -43,8 +43,8 @@ def cmd_prep(args):
 def cmd_compose(args):
     logger.info("Compose")
 
-    WordsData.words_data = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FIVE_FILE_NAME,
-                                                        OUTPUT_DIR + WORDS_SEVEN_FILE_NAME)
+    WordsData.words_five_list = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FIVE_FILE_NAME)
+    WordsData.words_seven_list = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_SEVEN_FILE_NAME)
 
     haiker = Haiker()
     haiku = haiker.compose()
