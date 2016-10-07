@@ -47,20 +47,12 @@ class DataConstructor:
         text_list = list()
         for line in delimited_read_data_list:
             text_list += self._start_new_line(line)
-        # text_list = [[1行目],
-        #              [2行目],
-        #              ...,
-        #              [n行目]]
-        # parsed_text = [m.parse(line) for line in delimited_read_data_list]
         parsed_list = self._parse_list(text_list)
-        # csv_list = [self._splited_word_data_to_csv_list(line) for line in parsed_list]
         csv_list = self._splited_word_data_to_csv_list(parsed_list)
-        # sanitized_data_list = self._sanitize_data_list(csv_list)
         sanitized_data_list = self._sanitize_data_list(csv_list)
         return self._extract_data(sanitized_data_list)
 
     def _delimit(self, parsed_text):
-        # return parsed_text.split(self.DELIMITER)
         return parsed_text.splitlines()
 
     def _start_new_line(self, text):

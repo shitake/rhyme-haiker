@@ -14,129 +14,142 @@ class TestWordsDataConstructor(unittest.TestCase):
         read_data = "気象庁"
         self.assertEqual(
             wdc._construct_parsed_data(read_data),
-            [
-                [
-                    {
-                        "word": "気象庁",
-                        "part": "名詞",
-                        "vowel": "イオーオー",
-                        "length": 5
-                    }
-                ]
-            ]
+            {
+                wdc.FIVE_STR: [
+                    [
+                        {
+                            "word": "気象庁",
+                            "part": "名詞",
+                            "vowel": "イオーオー",
+                            "length": 5
+                        }
+                    ]
+                ],
+                wdc.SEVEN_STR: []
+            }
         )
 
         read_data = "雨が降る"
         self.assertEqual(
             wdc._construct_parsed_data(read_data),
-            [
-                [
-                    {
-                        "word": "雨",
-                        "part": "名詞",
-                        "vowel": "アエ",
-                        "length": 2
-                    },
-                    {
-                        "word": "が",
-                        "part": "助詞",
-                        "vowel": "ア",
-                        "length": 1
-                    },
-                    {
-                        "word": "降る",
-                        "part": "動詞",
-                        "vowel": "ウウ",
-                        "length": 2
-                    }
-                ]
-            ]
+            {
+                wdc.FIVE_STR: [
+                    [
+                        {
+                            "word": "雨",
+                            "part": "名詞",
+                            "vowel": "アエ",
+                            "length": 2
+                        },
+                        {
+                            "word": "が",
+                            "part": "助詞",
+                            "vowel": "ア",
+                            "length": 1
+                        },
+                        {
+                            "word": "降る",
+                            "part": "動詞",
+                            "vowel": "ウウ",
+                            "length": 2
+                        }
+                    ]
+                ],
+                wdc.SEVEN_STR: []
+            }
         )
 
         read_data = "あいうえお，さしすせそ"
         self.assertEqual(
             wdc._construct_parsed_data(read_data),
-            [
+            {
+                wdc.FIVE_STR:
                 [
-                    {
-                        "word": "さ",
-                        "part": "副詞",
-                        "vowel": "ア",
-                        "length": 1
-                    },
-                    {
-                        "word": "しす",
-                        "part": "動詞",
-                        "vowel": "イウ",
-                        "length": 2
-                    },
-                    {
-                        "word": "せ",
-                        "part": "動詞",
-                        "vowel": "エ",
-                        "length": 1
-                    },
-                    {
-                        "word": "そ",
-                        "part": "名詞",
-                        "vowel": "オ",
-                        "length": 1
-                    }
-                ]
-            ]
+                    [
+                        {
+                            "word": "さ",
+                            "part": "副詞",
+                            "vowel": "ア",
+                            "length": 1
+                        },
+                        {
+                            "word": "しす",
+                            "part": "動詞",
+                            "vowel": "イウ",
+                            "length": 2
+                        },
+                        {
+                            "word": "せ",
+                            "part": "動詞",
+                            "vowel": "エ",
+                            "length": 1
+                        },
+                        {
+                            "word": "そ",
+                            "part": "名詞",
+                            "vowel": "オ",
+                            "length": 1
+                        }
+                    ]
+                ],
+                wdc.SEVEN_STR: []
+            }
         )
 
         read_data = "かきくけこ，さしすせそ"
         self.assertEqual(
             wdc._construct_parsed_data(read_data),
-            [
-                [
-                    {
-                        "word": "かき",
-                        "part": "動詞",
-                        "vowel": "アイ",
-                        "length": 2
-                    },
-                    {
-                        "word": "くけ",
-                        "part": "動詞",
-                        "vowel": "ウエ",
-                        "length": 2
-                    },
-                    {
-                        "word": "こ",
-                        "part": "動詞",
-                        "vowel": "オ",
-                        "length": 1
-                    }
+            {
+                wdc.FIVE_STR: [
+                    [
+                        {
+                            "word": "かき",
+                            "part": "動詞",
+                            "vowel": "アイ",
+                            "length": 2
+                        },
+                        {
+                            "word": "くけ",
+                            "part": "動詞",
+                            "vowel": "ウエ",
+                            "length": 2
+                        },
+                        {
+                            "word": "こ",
+                            "part": "動詞",
+                            "vowel": "オ",
+                            "length": 1
+                        }
+                    ],
+                    [
+                        {
+                            "word": "さ",
+                            "part": "副詞",
+                            "vowel": "ア",
+                            "length": 1
+                        },
+                        {
+                            "word": "しす",
+                            "part": "動詞",
+                            "vowel": "イウ",
+                            "length": 2
+                        },
+                        {
+                            "word": "せ",
+                            "part": "動詞",
+                            "vowel": "エ",
+                            "length": 1
+                        },
+                        {
+                            "word": "そ",
+                            "part": "名詞",
+                            "vowel": "オ",
+                            "length": 1
+                        }
+                    ]
                 ],
-                [
-                    {
-                        "word": "さ",
-                        "part": "副詞",
-                        "vowel": "ア",
-                        "length": 1
-                    },
-                    {
-                        "word": "しす",
-                        "part": "動詞",
-                        "vowel": "イウ",
-                        "length": 2
-                    },
-                    {
-                        "word": "せ",
-                        "part": "動詞",
-                        "vowel": "エ",
-                        "length": 1
-                    },
-                    {
-                        "word": "そ",
-                        "part": "名詞",
-                        "vowel": "オ",
-                        "length": 1
-                    }
-                ]
-            ]
+                wdc.SEVEN_STR: []
+            }
         )
 
     def test_extract_data(self):
@@ -151,48 +164,37 @@ class TestWordsDataConstructor(unittest.TestCase):
         wdc = WordsDataConstructor()
         self.assertEqual(
             wdc._extract_data(mecabed_csv_list),
-            [
-                [
-                    {
-                        "word": "あい",
-                        "part": "動詞",
-                        "vowel": "アイ",
-                        "length": 2
-                    },
-                    {
-                        "word": "う",
-                        "part": "助動詞",
-                        "vowel": "ウ",
-                        "length": 1
-                    }
+            {
+                wdc.FIVE_STR: [
+                    [
+                        {
+                            "word": "さ",
+                            "part": "副詞",
+                            "vowel": "ア",
+                            "length": 1
+                        },
+                        {
+                            "word": "しす",
+                            "part": "動詞",
+                            "vowel": "イウ",
+                            "length": 2
+                        },
+                        {
+                            "word": "せ",
+                            "part": "動詞",
+                            "vowel": "エ",
+                            "length": 1
+                        },
+                        {
+                            "word": "そ",
+                            "part": "名詞",
+                            "vowel": "オ",
+                            "length": 1
+                        }
+                    ]
                 ],
-                [
-                    {
-                        "word": "さ",
-                        "part": "副詞",
-                        "vowel": "ア",
-                        "length": 1
-                    },
-                    {
-                        "word": "しす",
-                        "part": "動詞",
-                        "vowel": "イウ",
-                        "length": 2
-                    },
-                    {
-                        "word": "せ",
-                        "part": "動詞",
-                        "vowel": "エ",
-                        "length": 1
-                    },
-                    {
-                        "word": "そ",
-                        "part": "名詞",
-                        "vowel": "オ",
-                        "length": 1
-                    }
-                ]
-            ]
+                wdc.SEVEN_STR: []
+            }
         )
 
     def test_substitute_vowel(self):

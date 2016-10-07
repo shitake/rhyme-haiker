@@ -6,8 +6,6 @@ from logging import StreamHandler
 from logging import DEBUG
 
 import poetry
-from poetry.data_constructor.chains_data import ChainsData
-from poetry.data_constructor.chains_data_constructor import ChainsDataConstructor
 from poetry.data_constructor.words_data import WordsData
 from poetry.data_constructor.words_data_constructor import WordsDataConstructor
 from poetry.haiker.haiker import Haiker
@@ -22,8 +20,8 @@ logger.setLevel(DEBUG)
 logger.addHandler(handler)
 
 OUTPUT_DIR = poetry.__path__[0] + '/../output/'
-WORDS_FILE_NAME = 'words.pickle'
-CHAINS_FILE_NAME = 'chains.pickle'
+WORDS_FIVE_FILE_NAME = 'words_five.pickle'
+WORDS_SEVEN_FILE_NAME = 'words_seven.pickle'
 
 
 def cmd_prep(args):
@@ -32,14 +30,11 @@ def cmd_prep(args):
 
     read_data = DataReader.read_file(args.filename)
 
-    cdc = ChainsDataConstructor()
-    chains_data = cdc.construct_data(read_data)
-
     wdc = WordsDataConstructor()
     words_data = wdc.construct_data(read_data)
 
-    de = DataExporter(chains_data=chains_data,
-                      words_data=words_data)
+    de = DataExporter(words_five_data=words_data['five'],
+                      words_seven_data=words_data['seven'])
     de.export_pickle()
 
     logger.info("Exported")
@@ -48,8 +43,8 @@ def cmd_prep(args):
 def cmd_compose(args):
     logger.info("Compose")
 
-    WordsData.words_data = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FILE_NAME)
-    ChainsData.chains_data = DataReader.read_pickled_file(OUTPUT_DIR + CHAINS_FILE_NAME)
+    WordsData.words_data = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FIVE_FILE_NAME,
+                                                        OUTPUT_DIR + WORDS_SEVEN_FILE_NAME)
 
     haiker = Haiker()
     haiku = haiker.compose()

@@ -16,42 +16,60 @@ logger.addHandler(handler)
 
 class WordsDataConstructor(DataConstructor):
 
+    FIVE_STR = 'seven'
+    SEVEN_STR = 'five'
+
+    LENGTH = 'length'
+
     def _extract_data(self, csv_data_list):
         """
         親クラスのメソッドをオーバーライド．
         下記のようなデータ構造を返す．
-        [
-            [
-                {
-                    "word": "あ",
-                    "vowel": "ア",
-                    "length": 1,
-                    "part": "名詞"
-                },
-                {
-                    "word": "い",
-                    "vowel": "イ",
-                    "length": 1,
-                    "part": "名詞"
-                }
+        {
+            'five': [
+                [
+                    {
+                        "word": "あ",
+                        "vowel": "ア",
+                        "length": 1,
+                        "part": "名詞"
+                    },
+                    ...,
+                    {
+                        "word": "い",
+                        "vowel": "イ",
+                        "length": 1,
+                        "part": "名詞"
+                    }
+                ],
+                [
+                    {
+                        "word": "か",
+                        "vowel": "カ",
+                        "length": 1,
+                        "part": "名詞"
+                    },
+                    {
+                        "word": "き",
+                        "vowel": "キ",
+                        "length": 1,
+                        "part": "名詞"
+                    }
+                    ,
+                    ...
+                ]
             ],
-            [
-                {
-                    "word": "か",
-                    "vowel": "カ",
-                    "length": 1,
-                    "part": "名詞"
-                },
-                {
-                    "word": "き",
-                    "vowel": "キ",
-                    "length": 1,
-                    "part": "名詞"
-                }
+            'seven': [
+                ...
             ]
-        ]
+        }
         """
-        return [[self._construct_words_dict(csv_data) for csv_data in sentence] for sentence in csv_data_list]
+        extracted_data_list = [[self._construct_words_dict(csv_data) for csv_data in sentence] for sentence in csv_data_list]
+        # 5, 7 文字からなる文章以外除外
+        sentence_five = self._extract_n_char_sentence(5, extracted_data_list)
+        sentence_seven = self._extract_n_char_sentence(7, extracted_data_list)
+        return {self.FIVE_STR: sentence_five,
+                self.SEVEN_STR: sentence_seven}
         # return [
         #     self._construct_words_dict(csv_data) for sentence in csv_data_list for csv_data in sentence
         # ]
@@ -80,8 +98,7 @@ class WordsDataConstructor(DataConstructor):
         # 拗音をリストの先頭にする
         try:
             substituted_yomi = self._substitute_diphthong()
-            self.vowel_pronounciation = \
-                self._substitute_straight_syllables(substituted_yomi)
+            self.vowel_pronounciation = self._substitute_straight_syllables(substituted_yomi)
         except SubstitutionError as e:
             print('Substitution was incompleted.', e.origin, e.value)
 
@@ -188,6 +205,21 @@ class WordsDataConstructor(DataConstructor):
             if o == c:
                 return False
         return True
+
+    def _extract_n_char_sentence(self, n, sentence_list):
+        """
+        n 文字の文章のみ取得
+        """
+        n_char_sentence_list = list()
+        for sentence in sentence_list:
+            len_sum = 0
+            for word in sentence:
+                len_sum += word[self.LENGTH]
+                if len_sum > n:
+                    break
+            if len_sum == n:
+                n_char_sentence_list.append(sentence)
+        return n_char_sentence_list
 
 
 class SubstitutionError(Exception):
