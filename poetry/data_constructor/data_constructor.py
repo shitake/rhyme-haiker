@@ -16,8 +16,6 @@ logger.addHandler(handler)
 
 class DataConstructor:
 
-    SENTENCE = 0  # TODO: 修正
-
     WORD = 0
     PART = 1
     PART_SUBTYPE = 2
@@ -118,7 +116,7 @@ class DataConstructor:
         for sentence in csv_list:
             if self._is_invalid_sentence(sentence):
                 logger.debug("Invalid sentence: %s." % sentence)
-            elif sentence[self.SENTENCE] in unique_sentence_list:
+            elif sentence in unique_sentence_list:
                 logger.debug("Duplicated: %s." % sentence)
             else:
                 sanitized_data_list.append(sentence)
@@ -135,6 +133,9 @@ class DataConstructor:
         if not isinstance(sentence, list):
             logger.warning("Input value is not List: %s." % sentence)
 
+        if self._is_invalid_part_for_head(sentence):
+            logger.debug("Invalid sentence head: %s" % sentence)
+            return True
         for csv_data in sentence:
             if not self._can_read(csv_data):
                 logger.debug("Invalid word: %s." % csv_data[self.WORD])
@@ -182,6 +183,16 @@ class DataConstructor:
             return False
         else:
             return True
+
+    def _is_invalid_part_for_head(self, sentence):
+        """
+        文章の先頭に無効な品詞がある場合，True を返す
+        """
+        invalid_parts = ['助詞']
+        if sentence[0][self.PART] in invalid_parts:
+            return True
+        else:
+            return False
 
     def _extract_data(self, csv_data_list):
         """

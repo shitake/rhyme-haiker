@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
 from logging import getLogger
 from logging import StreamHandler
 from logging import DEBUG
@@ -29,7 +28,7 @@ class DataExporter:
         """
         Pickle で保存．
         """
-        self._export(pickle.dumps(self.words_seven_data),
+        self._export(pickle.dumps(self.words_five_data),
                      pickle.dumps(self.words_seven_data))
 
     def _export(self, words_five_data, words_seven_data):
