@@ -24,8 +24,3 @@ class DataReader:
         """
         with open(addr, 'rb') as f:
             return pickle.load(f)
-
-    # def read_file_nltk(self, addr):
-    #     """
-    #     nltk でデータ読み込み
-    #     """

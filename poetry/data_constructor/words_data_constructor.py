@@ -70,9 +70,6 @@ class WordsDataConstructor(DataConstructor):
         sentence_seven = self._extract_n_char_sentence(7, extracted_data_list)
         return {self.FIVE_STR: sentence_five,
                 self.SEVEN_STR: sentence_seven}
-        # return [
-        #     self._construct_words_dict(csv_data) for sentence in csv_data_list for csv_data in sentence
-        # ]
 
     def _construct_words_dict(self, csv_data):
         """
@@ -230,10 +227,3 @@ class SubstitutionError(Exception):
 
     def __str__(self):
         return repr(self.origin, self.value)
-
-
-# if __name__ == '__main__':
-#     corpus =
-#     dc = WordsDataConstructor()
-#     parsed = dc.construct_data(corpus)
-#     print(repr(parsed))
