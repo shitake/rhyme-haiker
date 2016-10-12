@@ -2,15 +2,14 @@
 
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
-from logging import INFO
+from logging import WARNING
 import MeCab
 import re
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(INFO)
-logger.setLevel(INFO)
+handler.setLevel(WARNING)
+logger.setLevel(WARNING)
 logger.addHandler(handler)
 
 

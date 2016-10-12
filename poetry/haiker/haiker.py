@@ -2,7 +2,7 @@
 
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
+from logging import WARNING
 import random
 
 from poetry.data_constructor.words_data import WordsData
@@ -10,8 +10,8 @@ from poetry.rhymer.rhymer import Rhymer
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(WARNING)
+logger.setLevel(WARNING)
 logger.addHandler(handler)
 
 

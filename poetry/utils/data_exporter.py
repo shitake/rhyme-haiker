@@ -2,15 +2,15 @@
 
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
+from logging import WARNING
 import pickle
 
 import poetry
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(WARNING)
+logger.setLevel(WARNING)
 logger.addHandler(handler)
 
 

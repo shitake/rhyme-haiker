@@ -3,7 +3,7 @@
 import argparse
 from logging import getLogger
 from logging import StreamHandler
-from logging import DEBUG
+from logging import WARNING
 
 import poetry
 from poetry.data_constructor.words_data import WordsData
@@ -15,8 +15,8 @@ from poetry.utils.data_exporter import DataExporter
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(DEBUG)
-logger.setLevel(DEBUG)
+handler.setLevel(WARNING)
+logger.setLevel(WARNING)
 logger.addHandler(handler)
 
 OUTPUT_DIR = poetry.__path__[0] + '/../output/'
