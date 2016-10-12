@@ -16,7 +16,7 @@ logger.addHandler(handler)
 
 class DataExporter:
 
-    OUTPUT_DIR = poetry.__path__[0] + '/../output/'
+    OUTPUT_DIR = poetry.__path__[0] + '/output/'
     WORDS_FIVE_FILE_NAME = "words_five.pickle"
     WORDS_SEVEN_FILE_NAME = "words_seven.pickle"
 

@@ -3,7 +3,7 @@
 import argparse
 from logging import getLogger
 from logging import StreamHandler
-from logging import WARNING
+from logging import INFO
 
 import poetry
 from poetry.data_constructor.words_data import WordsData
@@ -15,11 +15,11 @@ from poetry.utils.data_exporter import DataExporter
 
 logger = getLogger(__name__)
 handler = StreamHandler()
-handler.setLevel(WARNING)
-logger.setLevel(WARNING)
+handler.setLevel(INFO)
+logger.setLevel(INFO)
 logger.addHandler(handler)
 
-OUTPUT_DIR = poetry.__path__[0] + '/../output/'
+OUTPUT_DIR = poetry.__path__[0] + '/output/'
 WORDS_FIVE_FILE_NAME = 'words_five.pickle'
 WORDS_SEVEN_FILE_NAME = 'words_seven.pickle'
 
