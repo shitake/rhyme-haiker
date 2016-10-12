@@ -32,7 +32,7 @@ class DataConstructor:
         インターフェイス
         テーブル挿入用データを作成する．
         """
-        return self._construct_parsed_data(read_data)  # TODO: 修正対象
+        return self._construct_parsed_data(read_data)
 
     def _construct_parsed_data(self, read_data):
         """
@@ -188,9 +188,12 @@ class DataConstructor:
         文章の先頭に無効な品詞がある場合，True を返す
         """
         invalid_parts = ['助詞']
-        if sentence[0][self.PART] in invalid_parts:
-            return True
-        else:
+        try:
+            if sentence[0][self.PART] in invalid_parts:
+                return True
+            else:
+                return False
+        except IndexError:
             return False
 
     def _extract_data(self, csv_data_list):

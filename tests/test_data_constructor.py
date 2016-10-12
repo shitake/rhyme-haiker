@@ -257,5 +257,8 @@ class TestDataConstructor(unittest.TestCase):
                     ['こ', '名詞', '一般', '*', '*', '*', '*', 'こ', 'コ', 'コ']]
         self.assertTrue(dc._is_invalid_part_for_head(sentence))
 
+        sentence = [['EOS']]
+        self.assertFalse(dc._is_invalid_part_for_head(sentence))
+
 if __name__ == '__main__':
     unittest.main()
