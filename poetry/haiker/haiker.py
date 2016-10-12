@@ -24,15 +24,26 @@ class Haiker:
         first_loop_limit = 10
         first_current_loop = 0
         while True:
+            if first_current_loop == first_loop_limit:
+                return "***** だめでした *****"
+
             rhyming_num = random.choice([1, 2, 3])
             logger.debug('韻: {}'.format(rhyming_num))
 
             # get 5
-            first_sentence = self._get_n_char_sentence(5)
+            try:
+                first_sentence = self._get_n_char_sentence(5)
+            except IndexError:
+                first_current_loop += 1
+                continue
             first_words = WordsData.get_words(first_sentence)
             logger.debug("5: {}".format(first_words))
             # get 7
-            second_sentence = self._get_n_char_sentence(7)
+            try:
+                second_sentence = self._get_n_char_sentence(7)
+            except IndexError:
+                first_current_loop += 1
+                continue
             second_words = WordsData.get_words(second_sentence)
             second_last_vowel = WordsData.get_n_char_vowel(second_sentence, rhyming_num)
             logger.debug("7: {}".format(second_words))
@@ -48,7 +59,9 @@ class Haiker:
                 try:
                     third_sentence = self._get_n_char_sentence(5)
                 except IndexError:
-                    logger.info('*** pop from empty list ***')
+                    logger.debug('*** pop from empty list ***')
+                    logger.info('*** やりなおし ***')
+                    second_current_loop += 1
                     break
                 third_last_vowel = WordsData.get_n_char_vowel(third_sentence, rhyming_num)
                 if Rhymer.is_rhymed(second_last_vowel, third_last_vowel):
