@@ -1,15 +1,16 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.rst') as f:
     readme = f.read()
 
 setup(
-    name="RhymeHaiker",
-    version="2.0.0",
+    name="rhyme-haiker",
+    version="2.0.2",
     description='A rhyming haiku generator.',
     long_description=readme,
-    url='',
+    url='https://github.com/shitake/rhyme-haiker',
     author="pochiyuru",
+    author_email='pochiyuru@gmail.com',
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -19,10 +20,10 @@ setup(
         'Topic :: Communications'
     ],
     keywords='rhyme haiku',
-    packages=[
-        'poetry',
+    packages=find_packages(),
+    install_requires=[
+        'mecab-python3==0.7'
     ],
-    install_requires=[],
     data_files=[],
     entry_points={
         'console_scripts': [
