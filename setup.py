@@ -5,7 +5,7 @@ with open('README.rst') as f:
 
 setup(
     name="rhyme-haiker",
-    version="2.0.5",
+    version="2.0.6",
     description='A rhyming haiku generator.',
     long_description=readme,
     url='https://github.com/shitake/rhyme-haiker',

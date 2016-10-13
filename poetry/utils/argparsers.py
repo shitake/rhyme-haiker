@@ -6,9 +6,8 @@ from logging import StreamHandler
 from logging import INFO
 
 import poetry
-from poetry.data_constructor.words_data import WordsData
+from poetry.haiku import Haiku
 from poetry.data_constructor.words_data_constructor import WordsDataConstructor
-from poetry.haiker.haiker import Haiker
 from poetry.utils.data_reader import DataReader
 from poetry.utils.data_exporter import DataExporter
 
@@ -41,15 +40,7 @@ def cmd_prep(args):
 
 
 def cmd_compose(args):
-    logger.info("Compose")
-
-    WordsData.words_five_list = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_FIVE_FILE_NAME)
-    WordsData.words_seven_list = DataReader.read_pickled_file(OUTPUT_DIR + WORDS_SEVEN_FILE_NAME)
-
-    haiker = Haiker()
-    haiku = haiker.compose()
-
-    logger.info(haiku)
+    Haiku.compose()
 
 
 def main():
